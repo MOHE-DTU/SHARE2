@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal vs Aplikasi — DTU KPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:    #1A5CB8;
+    --blue-lt: #EBF2FB;
+    --blue-md: #B8D0F0;
+    --green:   #0F7A52;
+    --green-lt:#E6F4EE;
+    --amber:   #92600A;
+    --amber-lt:#FEF3DC;
+    --red:     #B91C1C;
+    --red-lt:  #FEE2E2;
+    --gray:    #374151;
+    --gray-lt: #F3F4F6;
+    --gray-md: #D1D5DB;
+    --text:    #111827;
+    --text-2:  #4B5563;
+    --text-3:  #9CA3AF;
+    --border:  #E5E7EB;
+    --white:   #FFFFFF;
+    --surface: #F9FAFB;
+    --font:    'Plus Jakarta Sans', sans-serif;
+    --mono:    'DM Mono', monospace;
+    --radius:  10px;
+    --shadow:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: var(--font);
+    background: #F0F4FA;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #0D2B6B 0%, #1A5CB8 60%, #2471D4 100%);
+    padding: 2rem 2.5rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 10px;
+  }
+  .header-tag span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #60B8FF;
+    display: inline-block;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+    position: relative;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    position: relative;
+  }
+
+  /* ── Tab navigation ── */
+  .tab-nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    padding: 14px 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .tab-btn:hover { color: var(--blue); }
+  .tab-btn.active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+    font-weight: 600;
+  }
+  .tab-btn .tab-icon {
+    font-size: 15px;
+    opacity: 0.7;
+  }
+
+  /* ── Main content ── */
+  .content {
+    padding: 1.75rem 2rem 2.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .card + .card { margin-top: 12px; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 640px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .content { padding: 1.25rem; }
+    .tab-btn { padding: 12px 14px; }
+  }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .badge-blue   { background: var(--blue-lt);  color: var(--blue); }
+  .badge-green  { background: var(--green-lt); color: var(--green); }
+  .badge-amber  { background: var(--amber-lt); color: var(--amber); }
+  .badge-red    { background: var(--red-lt);   color: var(--red); }
+  .badge-gray   { background: var(--gray-lt);  color: var(--gray); }
+
+  /* ── Card headers ── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .card-icon-blue  { background: var(--blue-lt);  color: var(--blue); }
+  .card-icon-green { background: var(--green-lt); color: var(--green); }
+  .card-title { font-size: 15px; font-weight: 600; }
+
+  /* ── Info rows ── */
+  .info-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .info-row:last-child { margin-bottom: 0; }
+  .info-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .info-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .info-text  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+  /* ── Divider ── */
+  .hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+  /* ── Tag cloud ── */
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  /* ── Layer stack ── */
+  .layer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+  .layer-lbl {
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 500;
+    width: 96px;
+    min-width: 96px;
+    text-align: right;
+  }
+  .layer-block {
+    flex: 1;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .lb-blue  { background: var(--blue-lt);  color: var(--blue); }
+  .lb-green { background: var(--green-lt); color: var(--green); }
+
+  /* ── Cost bar ── */
+  .cost-item { margin-bottom: 13px; }
+  .cost-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  .cost-name  { font-size: 12px; color: var(--text-2); }
+  .cost-value { font-size: 12px; font-weight: 600; color: var(--text); }
+  .cost-track { background: var(--gray-lt); border-radius: 4px; height: 7px; overflow: hidden; }
+  .cost-fill  { height: 7px; border-radius: 4px; transition: width .6s ease; }
+  .cost-blue  { background: var(--blue); }
+  .cost-green { background: var(--green); }
+
+  /* ── Section label ── */
+  .section-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 0 0 10px;
+  }
+
+  /* ── Insight box ── */
+  .insight {
+    background: #EBF2FB;
+    border-left: 3px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1A3A6B;
+    line-height: 1.65;
+  }
+  .insight.amber {
+    background: var(--amber-lt);
+    border-color: #D48A0F;
+    color: #5C3A07;
+  }
+  .insight.green {
+    background: var(--green-lt);
+    border-color: var(--green);
+    color: #074D34;
+  }
+
+  /* ── Example card ── */
+  .ex-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.4rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+  }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .ex-title { font-size: 14px; font-weight: 600; }
+  .ex-body  { font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+  .ex-body strong { color: var(--text); font-weight: 600; }
+  .ex-body em { font-style: normal; color: var(--green); font-weight: 500; }
+
+  /* ── Summary table ── */
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .sum-table th {
+    background: var(--surface);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .sum-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-2);
+    vertical-align: top;
+  }
+  .sum-table tr:last-child td { border-bottom: none; }
+  .sum-table tr:hover td { background: var(--surface); }
+  .sum-table td:first-child { font-weight: 600; color: var(--text); width: 160px; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-3);
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    margin-top: 1rem;
+  }
+  .footer span { color: var(--blue); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-tag"><span></span> Unit Transformasi Digital &nbsp;·&nbsp; KPT</div>
+  <h1>Portal vs Aplikasi</h1>
+  <div class="header-sub">Penerangan teknikal, perbezaan kos &amp; contoh sebenar dalam ekosistem KPT</div>
+</div>
+
+<!-- Tab Navigation -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('definisi', this)">
+    <span class="tab-icon">⊞</span> Definisi &amp; Struktur
+  </button>
+  <button class="tab-btn" onclick="showTab('lapisan', this)">
+    <span class="tab-icon">⧉</span> Lapisan Teknikal
+  </button>
+  <button class="tab-btn" onclick="showTab('kos', this)">
+    <span class="tab-icon">◎</span> Analisis Kos
+  </button>
+  <button class="tab-btn" onclick="showTab('contoh', this)">
+    <span class="tab-icon">◈</span> Contoh Sebenar KPT
+  </button>
+  <button class="tab-btn" onclick="showTab('ringkasan', this)">
+    <span class="tab-icon">≡</span> Ringkasan
+  </button>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <!-- TAB 1: DEFINISI -->
+  <div id="tab-definisi" class="tab-panel active">
+    <div class="grid-2">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-blue">🌐</div>
+          <div>
+            <div class="card-title">Portal</div>
+            <span class="badge badge-blue">Gerbang Bersepadu</span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="info-label">Definisi</div>
+            <div class="info-text">Pintu masuk tunggal yang menggabungkan pelbagai perkhidmatan atau aplikasi dalam satu antaramuka. Pengguna log masuk sekali (SSO) dan boleh akses semua fungsi.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="info-label">Analogi</div>
+            <div class="info-text">Seperti <strong>KLCC</strong> — satu bangunan besar, banyak kedai di dalamnya. Pengunjung masuk sekali melalui satu pintu, boleh ke mana-mana bahagian.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="info-label">Pengguna sasaran</div>
+            <div class="info-text">Pelbagai jenis pengguna (awam, staf, pentadbir) dalam satu platform merentasi domain berbeza.</div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="info-label">Contoh dalam KPT</div>
+        <div class="tag-cloud">
+          <span class="badge badge-blue">Portal KPT</span>
+          <span class="badge badge-blue">myGOV Malaysia</span>
+          <span class="badge badge-blue">Portal UPU</span>
+          <span class="badge badge-blue">Portal GREaT</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-green">⚙️</div>
+          <div>
+            <div class="card-title">Aplikasi</div>
+            <span class="badge badge-green">Sistem Spesifik</span>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--green);"></div>
+          <div>
+            <div class="info-label">Definisi</div>
+            <div class="info-text">Sistem yang direka untuk satu tujuan atau domain yang spesifik. Ia menguruskan proses perniagaan tertentu dengan logik, data, dan aliran kerja tersendiri.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--green);"></div>
+          <div>
+            <div class="info-label">Analogi</div>
+            <div class="info-text">Seperti <strong>kedai dalam KLCC</strong> — masing-masing ada operasi, stok, dan pekerja sendiri. Boleh wujud secara bebas atau sebagai sebahagian daripada portal.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-dot" style="background:var(--green);"></div>
+          <div>
+            <div class="info-label">Pengguna sasaran</div>
+            <div class="info-text">Pengguna dalam domain tertentu sahaja. Contoh: aplikasi biasiswa — hanya untuk pemohon dan pegawai biasiswa.</div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="info-label">Contoh dalam KPT</div>
+        <div class="tag-cloud">
+          <span class="badge badge-green">MyMoheS</span>
+          <span class="badge badge-green">HRMIS</span>
+          <span class="badge badge-green">MyBrain</span>
+          <span class="badge badge-green">UPUOnline</span>
+          <span class="badge badge-green">iGFMAS</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="section-lbl">Perbezaan Utama</div>
+      <div class="grid-2">
+        <div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--blue); margin-top:5px;"></div>
+            <div class="info-text"><strong>Portal</strong> — mengintegrasikan banyak fungsi, satu log masuk, satu URL utama</div>
+          </div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--blue); margin-top:5px;"></div>
+            <div class="info-text">Lebih <strong>kompleks</strong> dari segi seni bina — perlu SSO, hak akses, API routing</div>
+          </div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--blue); margin-top:5px;"></div>
+            <div class="info-text">Kos pembangunan dan penyelenggaraan <strong>lebih tinggi</strong></div>
+          </div>
+        </div>
+        <div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--green); margin-top:5px;"></div>
+            <div class="info-text"><strong>Aplikasi</strong> — satu fungsi/domain, boleh ada log masuk tersendiri</div>
+          </div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--green); margin-top:5px;"></div>
+            <div class="info-text">Lebih <strong>mudah dan cepat</strong> dibangunkan — skop terhad, lebih mudah diurus</div>
+          </div>
+          <div class="info-row">
+            <div class="info-dot" style="background:var(--green); margin-top:5px;"></div>
+            <div class="info-text">Kos lebih rendah tetapi <strong>berisiko silo</strong> jika tidak diselaraskan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: LAPISAN TEKNIKAL -->
+  <div id="tab-lapisan" class="tab-panel">
+    <div class="grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-blue">🌐</div>
+          <div class="card-title">Portal — lapisan teknikal</div>
+        </div>
+        <div class="layer"><div class="layer-lbl">UI Layer</div><div class="layer-block lb-blue">Frontend (React/Vue) + Design System</div></div>
+        <div class="layer"><div class="layer-lbl">Auth Layer</div><div class="layer-block lb-blue">SSO / OAuth2 / MyDigitalID / Keycloak</div></div>
+        <div class="layer"><div class="layer-lbl">API Gateway</div><div class="layer-block lb-blue">Routing, rate-limit, load balancer</div></div>
+        <div class="layer"><div class="layer-lbl">Microservices</div><div class="layer-block lb-blue">Pelbagai servis bebas (App A, B, C...)</div></div>
+        <div class="layer"><div class="layer-lbl">Data Layer</div><div class="layer-block lb-blue">Data lake, shared DB, caching (Redis)</div></div>
+        <div class="layer"><div class="layer-lbl">Infrastruktur</div><div class="layer-block lb-blue">Cloud / Awan Kerajaan + CDN + monitoring</div></div>
+        <div class="hr"></div>
+        <div class="insight">Memerlukan <strong>6 lapisan penuh</strong> — setiap lapisan perlukan kepakaran tersendiri, pasukan lebih besar, dan kos yang lebih tinggi.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-green">⚙️</div>
+          <div class="card-title">Aplikasi — lapisan teknikal</div>
+        </div>
+        <div class="layer"><div class="layer-lbl">UI Layer</div><div class="layer-block lb-green">Frontend (modul spesifik sahaja)</div></div>
+        <div class="layer"><div class="layer-lbl">Auth Layer</div><div class="layer-block lb-green">Log masuk sendiri atau ikut portal</div></div>
+        <div class="layer"><div class="layer-lbl">API</div><div class="layer-block lb-green">REST/SOAP endpoint (domain sendiri)</div></div>
+        <div class="layer"><div class="layer-lbl">Business Logic</div><div class="layer-block lb-green">Peraturan perniagaan spesifik domain</div></div>
+        <div class="layer"><div class="layer-lbl">Database</div><div class="layer-block lb-green">DB sendiri (MySQL / PostgreSQL / Oracle)</div></div>
+        <div class="layer"><div class="layer-lbl">Infrastruktur</div><div class="layer-block lb-green">Server sendiri atau dikongsi</div></div>
+        <div class="hr"></div>
+        <div class="insight green">Lebih ringkas — skop terhad membolehkan pasukan kecil (2–5 orang) mengurusnya dengan efektif.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-lbl">⚠ Perbezaan Kritikal dari Segi Teknikal</div>
+      <div class="info-text" style="line-height:1.75;">
+        Portal memerlukan komponen tambahan yang tidak diperlukan oleh aplikasi biasa:
+        <strong>API Gateway</strong> untuk menguruskan routing antara servis,
+        <strong>Identity Provider</strong> untuk SSO merentasi semua aplikasi,
+        <strong>Session management</strong> yang kompleks, dan
+        <strong>Orchestration layer</strong> untuk memastikan semua komponen berfungsi selaras.
+        Setiap lapisan tambahan ini menambah kompleksiti, kos, dan keperluan kepakaran teknikal yang lebih tinggi.
+        Inilah sebab portal biasanya memerlukan pasukan IT yang besar dan masa pembangunan yang panjang.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: KOS -->
+  <div id="tab-kos" class="tab-panel">
+    <div class="grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-blue">🌐</div>
+          <div class="card-title">Portal — anggaran kos</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Pembangunan awal</span><span class="cost-value">RM 3jt – 10jt+</span></div>
+          <div class="cost-track"><div class="cost-fill cost-blue" style="width:90%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Penyelenggaraan tahunan</span><span class="cost-value">RM 500k – 2jt</span></div>
+          <div class="cost-track"><div class="cost-fill cost-blue" style="width:78%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Infrastruktur (hosting)</span><span class="cost-value">RM 200k – 1jt/tahun</span></div>
+          <div class="cost-track"><div class="cost-fill cost-blue" style="width:72%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Keselamatan siber</span><span class="cost-value">RM 150k – 500k/tahun</span></div>
+          <div class="cost-track"><div class="cost-fill cost-blue" style="width:65%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Pasukan teknikal</span><span class="cost-value">10 – 25 orang</span></div>
+          <div class="cost-track"><div class="cost-fill cost-blue" style="width:85%;"></div></div>
+        </div>
+        <div class="hr"></div>
+        <div class="badge badge-blue">Masa pembangunan: 18 – 36 bulan</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-green">⚙️</div>
+          <div class="card-title">Aplikasi — anggaran kos</div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Pembangunan awal</span><span class="cost-value">RM 200k – 2jt</span></div>
+          <div class="cost-track"><div class="cost-fill cost-green" style="width:38%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Penyelenggaraan tahunan</span><span class="cost-value">RM 50k – 300k</span></div>
+          <div class="cost-track"><div class="cost-fill cost-green" style="width:28%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Infrastruktur (hosting)</span><span class="cost-value">RM 20k – 150k/tahun</span></div>
+          <div class="cost-track"><div class="cost-fill cost-green" style="width:22%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Keselamatan siber</span><span class="cost-value">RM 20k – 80k/tahun</span></div>
+          <div class="cost-track"><div class="cost-fill cost-green" style="width:18%;"></div></div>
+        </div>
+        <div class="cost-item">
+          <div class="cost-header"><span class="cost-name">Pasukan teknikal</span><span class="cost-value">2 – 8 orang</span></div>
+          <div class="cost-track"><div class="cost-fill cost-green" style="width:32%;"></div></div>
+        </div>
+        <div class="hr"></div>
+        <div class="badge badge-green">Masa pembangunan: 3 – 12 bulan</div>
+      </div>
+    </div>
+
+    <div class="insight amber">
+      <strong>Implikasi bagi KPT — perspektif WoG:</strong><br>
+      Jika 10 bahagian masing-masing bangunkan aplikasi sendiri tanpa penyelarasan, kos gabungan boleh mencecah
+      <strong>RM 5jt – 20jt</strong> hanya untuk pembangunan. Dengan pendekatan WoG — berkongsi satu platform atau
+      API bersepadu — kos boleh dikurangkan sehingga <strong>40%–60%</strong>, di samping mengurangkan kos
+      penyelenggaraan dan keperluan pasukan IT yang besar di setiap bahagian.
+    </div>
+  </div>
+
+  <!-- TAB 4: CONTOH -->
+  <div id="tab-contoh" class="tab-panel">
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <span class="badge badge-blue">Portal</span>
+        <span class="ex-title">myGOV Malaysia</span>
+      </div>
+      <div class="ex-body">
+        <strong>Apa yang dilakukan:</strong> Satu pintu masuk untuk semua perkhidmatan kerajaan — dari renew lesen hingga semak cukai. Pengguna log masuk sekali dengan MyDigitalID.<br><br>
+        <strong>Kerumitan:</strong> Menggabungkan lebih 44 perkhidmatan dari 16 agensi berbeza. Memerlukan SSO, API Gateway, dan sistem hak akses yang kompleks merentasi agensi.<br><br>
+        <strong>Kos lebih tinggi kerana:</strong> Perlu memastikan semua agensi ikut piawaian sama, menguruskan versi API, uptime 99.9%, dan menyokong jutaan pengguna serentak.
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <span class="badge badge-blue">Portal</span>
+        <span class="ex-title">Portal UPU (upu.mohe.gov.my)</span>
+      </div>
+      <div class="ex-body">
+        <strong>Apa yang dilakukan:</strong> Pintu masuk untuk semua urusan kemasukan universiti awam — permohonan, semakan status, rayuan, dan panduan kelayakan.<br><br>
+        <strong>Kerumitan:</strong> Memuatkan UPUOnline, e-Panduan, UPUSelect dan UPUPocket dalam satu ekosistem. Perlu menguruskan lonjakan trafik semasa musim permohonan (ratusan ribu akses serentak).<br><br>
+        <strong>Kos lebih tinggi kerana:</strong> Infrastruktur mesti mampu tanggung beban tinggi dengan sistem backup dan disaster recovery yang kukuh.
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <span class="badge badge-green">Aplikasi</span>
+        <span class="ex-title">MyBrain15 (sistem biasiswa pasca siswazah)</span>
+      </div>
+      <div class="ex-body">
+        <strong>Apa yang dilakukan:</strong> Mengurus permohonan, kelulusan, pembayaran elaun, dan pemantauan kemajuan pelajar biasiswa MyBrain15 sahaja.<br><br>
+        <strong>Kerumitan:</strong> Skop terhad kepada satu program biasiswa. Logik perniagaan spesifik — syarat kelayakan, kadar elaun, keperluan laporan kemajuan.<br><br>
+        <strong>Kos lebih rendah kerana:</strong> Domain terhad, pengguna sedikit (pemohon biasiswa + pegawai KPT), tidak perlu tanggung trafik tinggi atau kompleksiti SSO merentasi agensi.
+      </div>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <span class="badge badge-green">Aplikasi</span>
+        <span class="ex-title">MyMoheS (data pelajar IPTA)</span>
+      </div>
+      <div class="ex-body">
+        <strong>Apa yang dilakukan:</strong> Pangkalan data berpusat untuk maklumat pelajar semua IPTA — enrolmen, program, dan prestasi akademik.<br><br>
+        <strong>Kerumitan:</strong> Walaupun skop adalah "satu aplikasi", ia menguruskan data berskala besar dari 20 IPTA. Integrasi dengan sistem dalaman IPTA masing-masing menambah kerumitan.<br><br>
+        <em>Nota WoG:</em> Ini contoh aplikasi yang <strong>berpotensi menjadi tulang belakang</strong> platform bersepadu — jika sistem lain merujuk data daripada MyMoheS, kita elak duplikasi data pelajar merentasi bahagian.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: RINGKASAN -->
+  <div id="tab-ringkasan" class="tab-panel">
+    <div class="card">
+      <div class="section-lbl">Jadual Perbandingan Lengkap</div>
+      <div style="overflow-x:auto;">
+        <table class="sum-table">
+          <thead>
+            <tr>
+              <th>Aspek</th>
+              <th>🌐 Portal</th>
+              <th>⚙️ Aplikasi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Definisi</td><td>Gerbang bersepadu — banyak servis dalam satu platform</td><td>Sistem khusus untuk satu domain atau fungsi</td></tr>
+            <tr><td>Log masuk</td><td>Single Sign-On (SSO) — satu log masuk untuk semua</td><td>Log masuk tersendiri atau ikut portal</td></tr>
+            <tr><td>Skop fungsi</td><td>Luas — merentasi pelbagai domain</td><td>Terhad — satu domain atau proses</td></tr>
+            <tr><td>Kerumitan teknikal</td><td>Tinggi — 6 lapisan + API Gateway + SSO</td><td>Sederhana — 4–5 lapisan sahaja</td></tr>
+            <tr><td>Kos pembangunan</td><td>RM 3jt – 10jt+</td><td>RM 200k – 2jt</td></tr>
+            <tr><td>Masa pembangunan</td><td>18 – 36 bulan</td><td>3 – 12 bulan</td></tr>
+            <tr><td>Pasukan diperlukan</td><td>10 – 25 orang</td><td>2 – 8 orang</td></tr>
+            <tr><td>Risiko utama</td><td>Kompleksiti tinggi, lambat dibangunkan</td><td>Silo jika tidak diselaraskan (WoG)</td></tr>
+            <tr><td>Sesuai untuk</td><td>Perkhidmatan kepada rakyat / pengguna ramai</td><td>Proses dalaman / domain tertentu</td></tr>
+            <tr><td>Contoh KPT</td><td>Portal KPT, Portal UPU, myGOV</td><td>MyMoheS, MyBrain, HRMIS, iGFMAS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="insight green" style="margin-top:14px;">
+      <strong>Cadangan DTU untuk RPTM 2026–2035:</strong><br>
+      Daripada 29 inisiatif digital yang dikenal pasti, kebanyakannya adalah <strong>aplikasi</strong> — lebih cepat dan murah dibangunkan.
+      Pendekatan WoG yang dicadangkan adalah untuk memastikan aplikasi-aplikasi ini <strong>berkongsi infrastruktur, data, dan identiti pengguna</strong>
+      yang sama, mengelakkan pembinaan silo, dan pada masa yang sama menyediakan landasan untuk diintegrasikan ke dalam
+      portal myGOV apabila telah matang. Ini menjimatkan kos 40%–60% berbanding setiap bahagian membangunkan sistem secara berasingan.
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  Disediakan oleh <span>Unit Transformasi Digital (DTU)</span> &nbsp;·&nbsp; Kementerian Pengajian Tinggi Malaysia &nbsp;·&nbsp; 2026
+</div>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
