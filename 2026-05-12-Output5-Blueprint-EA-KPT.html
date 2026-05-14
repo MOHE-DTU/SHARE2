@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadangan Pemetaan Sistem Digital RPTM 2026-2035</title>
+<style>
+:root{
+  --kpt-blue:#003087;--kpt-light:#0057b7;--kpt-gold:#c8a400;--kpt-green:#1a7a4a;
+  --kpt-red:#c0392b;--kpt-orange:#d35400;--bg:#f4f6fb;--white:#fff;
+  --card:#fff;--border:#dde3ef;--text:#1a2340;--muted:#6b7a99;
+  --shadow:0 2px 12px rgba(0,48,135,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--kpt-blue) 0%,var(--kpt-light) 100%);color:#fff;padding:18px 28px 14px}
+.header-top{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.kpt-logo{width:52px;height:52px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--kpt-blue);font-size:13px;flex-shrink:0}
+.header-title h1{font-size:1.35rem;font-weight:700;letter-spacing:.3px}
+.header-title p{font-size:.8rem;opacity:.85;margin-top:2px}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hbadge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 12px;font-size:.75rem}
+/* ── STATS ── */
+.stats-bar{display:flex;gap:12px;padding:14px 28px;background:#fff;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.stat-card{flex:1;min-width:120px;text-align:center;padding:10px 8px;border-radius:10px;background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:.18s;position:relative}
+.stat-card:hover{border-color:var(--kpt-blue);box-shadow:0 2px 10px rgba(0,48,135,.15);transform:translateY(-2px)}
+.stat-card::after{content:"👆";position:absolute;bottom:3px;right:6px;font-size:.6rem;opacity:.5}
+.stat-num{font-size:1.6rem;font-weight:800;color:var(--kpt-blue)}
+.stat-lbl{font-size:.7rem;color:var(--muted);margin-top:2px}
+.stat-card.green .stat-num{color:var(--kpt-green)}
+.stat-card.orange .stat-num{color:var(--kpt-orange)}
+.stat-card.red .stat-num{color:var(--kpt-red)}
+.stat-card.gold .stat-num{color:var(--kpt-gold)}
+/* ── TABS ── */
+.tab-nav{display:flex;gap:8px;background:var(--kpt-blue);padding:10px 28px;overflow-x:auto;align-items:center}
+.tab-btn{padding:10px 18px;border:2px solid rgba(255,255,255,.3);border-radius:10px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;font-size:.85rem;font-weight:700;white-space:nowrap;transition:.2s}
+.tab-btn.active{background:#fff;color:var(--kpt-blue);border-color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.tab-btn:hover:not(.active){background:rgba(255,255,255,.25);color:#fff;border-color:rgba(255,255,255,.6);transform:translateY(-1px)}
+/* ── SEARCH / FILTER BAR ── */
+.filter-bar{display:flex;gap:10px;padding:12px 28px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:.82rem;outline:none;background:#fff}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--kpt-blue)}
+.filter-bar input{flex:1;min-width:200px}
+.filter-bar label{font-size:.78rem;color:var(--muted);font-weight:600}
+.btn-reset{background:var(--kpt-blue);color:#fff;border:none;border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.8rem}
+/* ── MAIN CONTENT ── */
+.tab-content{display:none;padding:20px 28px}
+.tab-content.active{display:block}
+/* ── SECTION HEADERS (LONJAKAN / PS) ── */
+.section-header{border-radius:12px;padding:14px 18px;margin-bottom:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;transition:.2s}
+.section-header:hover{filter:brightness(1.07)}
+.section-header.lonjakan{background:linear-gradient(135deg,var(--kpt-blue),var(--kpt-light))}
+.section-header.ps-cluster{background:linear-gradient(135deg,#1a5c3a,var(--kpt-green))}
+.section-header.gap{background:linear-gradient(135deg,#7f0000,var(--kpt-red))}
+.section-title{color:#fff;font-size:1rem;font-weight:700}
+.section-sub{color:rgba(255,255,255,.85);font-size:.78rem;margin-top:3px}
+.section-arrow{color:#fff;font-size:1.2rem;transition:.3s}
+.section-arrow.open{transform:rotate(180deg)}
+/* ── PEMILIK CARD ── */
+.pemilik-card{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:10px 14px;margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.pemilik-item{display:flex;flex-direction:column;gap:2px}
+.pemilik-item .lbl{font-size:.68rem;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px}
+.pemilik-item .val{color:#fff;font-size:.82rem;font-weight:600}
+/* ── SYSTEMS GRID ── */
+.systems-container{display:none;margin-bottom:20px}
+.systems-container.open{display:block}
+.systems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:14px 0}
+/* ── SYSTEM CARD ── */
+.sys-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);transition:.2s}
+.sys-card:hover{box-shadow:0 4px 20px rgba(0,48,135,.18);transform:translateY(-1px)}
+.sys-card-header{padding:12px 16px 10px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sys-name-block{flex:1}
+.sys-singkatan{font-size:.72rem;font-weight:700;color:var(--kpt-blue);text-transform:uppercase;letter-spacing:.5px}
+.sys-nama{font-size:.92rem;font-weight:700;color:var(--text);margin:2px 0}
+.sys-kod{font-size:.72rem;color:var(--muted)}
+.sys-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700}
+.badge-b{background:#dce8ff;color:var(--kpt-blue)}
+.badge-a{background:#fff0d4;color:#9a5f00}
+.badge-d{background:#d4f0e2;color:#1a6b3a}
+.badge-t{background:#f0d4f5;color:#7a00a0}
+.badge-ps{background:#e8eeff;color:var(--kpt-blue);border:1px solid #b8ccff}
+.badge-lonjakan{background:var(--kpt-blue);color:#fff}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700}
+.status-selesai{background:#d4f0e2;color:#1a6b3a}
+.status-progress{background:#fff3cd;color:#856404}
+.status-dirancang{background:#e2e8ff;color:var(--kpt-blue)}
+.status-belum{background:#fde8e8;color:var(--kpt-red)}
+.status-duplikat{background:#f5d4d4;color:var(--kpt-red);border:1px solid var(--kpt-red)}
+/* ── PROGRESS BAR ── */
+.progress-wrap{padding:8px 16px 4px;display:flex;align-items:center;gap:8px}
+.progress-bar{flex:1;height:6px;background:#e8ecf5;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:.5s}
+.progress-pct{font-size:.72rem;font-weight:700;color:var(--muted);min-width:30px}
+/* ── CARD DETAIL ── */
+.sys-detail{display:none;border-top:1px solid var(--border);padding:14px 16px}
+.sys-detail.open{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.detail-full{grid-column:1/-1}
+.detail-item .dl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.detail-item .dv{font-size:.8rem;color:var(--text);line-height:1.5}
+/* ── EA COLUMN (special) ── */
+.ea-box{background:#f0f4ff;border:1px solid #b8ccff;border-radius:8px;padding:10px 12px;font-size:.78rem;color:var(--kpt-blue);line-height:1.6}
+/* ── CADANGAN COLUMN (Claude recommendation) ── */
+.cadangan-box{background:#fff8e6;border:1px solid var(--kpt-gold);border-radius:8px;padding:10px 12px;font-size:.78rem;color:#5a3e00;line-height:1.6}
+.cadangan-box .lbl-claude{font-size:.68rem;font-weight:700;color:var(--kpt-gold);margin-bottom:4px}
+/* ── IPO MINI ── */
+.ipo-mini{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.ipo-step{flex:1;min-width:90px;border-radius:6px;padding:6px 8px;font-size:.72rem}
+.ipo-i{background:#e6f2ff;border:1px solid #90c3ff;color:#004080}
+.ipo-p{background:#fff8e6;border:1px solid #ffd060;color:#6b4700}
+.ipo-o{background:#e8f5e9;border:1px solid #80c890;color:#1a5c2a}
+.ipo-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px}
+/* ── GAP NOTICE ── */
+.gap-notice{background:#fff0f0;border:2px solid var(--kpt-red);border-radius:10px;padding:14px 18px;color:var(--kpt-red);font-weight:600;font-size:.85rem;margin:10px 0}
+/* ── TABLE VIEW ── */
+.table-wrap{overflow-x:auto;border-radius:12px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;background:#fff;min-width:900px}
+thead th{background:var(--kpt-blue);color:#fff;padding:10px 12px;font-size:.75rem;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:1}
+tbody tr{border-bottom:1px solid #edf0f7}
+tbody tr:hover{background:#f0f4ff}
+tbody td{padding:9px 12px;font-size:.78rem;vertical-align:top}
+.td-nama{font-weight:700;color:var(--kpt-blue)}
+.td-kod{color:var(--muted);font-size:.7rem}
+/* ── BLUEPRINT TAB ── */
+.blueprint-section{background:#fff;border-radius:12px;padding:20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.blueprint-section h2{color:var(--kpt-blue);font-size:1rem;border-bottom:2px solid var(--kpt-gold);padding-bottom:8px;margin-bottom:14px}
+.methodology-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.method-stage{background:var(--bg);border-radius:10px;padding:12px 14px;border-left:4px solid var(--kpt-blue)}
+.method-stage h4{font-size:.85rem;color:var(--kpt-blue);margin-bottom:6px}
+.method-stage ul{padding-left:16px;font-size:.78rem;color:var(--text)}
+.method-stage ul li{margin-bottom:3px}
+/* ── ALERT BOX ── */
+.alert-box{border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:.82rem;line-height:1.6}
+.alert-warning{background:#fff8e6;border-left:4px solid var(--kpt-gold);color:#6b4700}
+.alert-danger{background:#fff0f0;border-left:4px solid var(--kpt-red);color:#7a0000}
+.alert-success{background:#e8f5e9;border-left:4px solid var(--kpt-green);color:#1a5c2a}
+.alert-info{background:#e6f0ff;border-left:4px solid var(--kpt-blue);color:#003087}
+/* ── FOOTER ── */
+.footer{text-align:center;padding:16px;color:var(--muted);font-size:.75rem;background:#fff;border-top:1px solid var(--border);margin-top:20px}
+/* ── HIDDEN ── */
+.hidden{display:none!important}
+/* ── TOGAF LAYERS LEGEND ── */
+.layer-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.ll-item{display:flex;align-items:center;gap:5px;font-size:.75rem}
+.ll-dot{width:12px;height:12px;border-radius:50%}
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;max-width:680px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3);animation:fadeUp .2s ease}
+.modal-header{background:var(--kpt-blue);color:#fff;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:1rem;font-weight:700}
+.modal-close{background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px}
+.modal-close:hover{opacity:.7}
+.modal-body{padding:20px;font-size:.88rem;line-height:1.7;color:var(--text)}
+.modal-body h4{color:var(--kpt-blue);margin:12px 0 5px;font-size:.9rem}
+.modal-body p{margin-bottom:8px}
+.modal-body ul{padding-left:20px;margin-bottom:8px}
+.modal-body ul li{margin-bottom:4px}
+@keyframes fadeUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* ── CLICKABLE HINTS ── */
+.hbadge-click{cursor:pointer;transition:.2s;position:relative}
+.hbadge-click:hover{background:rgba(255,255,255,.35);transform:scale(1.05)}
+.click-hint{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);background:#333;color:#fff;font-size:.62rem;padding:2px 8px;border-radius:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s;z-index:100}
+.cadangan-box,.ea-box{cursor:pointer;transition:.15s}
+.cadangan-box:hover{filter:brightness(.96);transform:scale(1.01)}
+.ea-box:hover{filter:brightness(.96);transform:scale(1.01)}
+.cadangan-box::after{content:"👆 Klik untuk baca penuh";display:block;font-size:.65rem;color:var(--kpt-gold);margin-top:5px;font-weight:700}
+.ea-box::after{content:"👆 Klik untuk baca penuh";display:block;font-size:.65rem;color:var(--kpt-blue);margin-top:5px;font-weight:700}
+.section-header::after{content:" 👆";font-size:.75rem;opacity:.7}
+.sys-card-header::after{content:"  👆 klik untuk butiran";font-size:.65rem;color:var(--muted);white-space:nowrap}
+/* ── INTEROP TAB ── */
+.interop-wrap{background:#111827;border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.interop-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;background:#1e293b;border-radius:10px;padding:10px 14px}
+.interop-legend-item{display:flex;align-items:center;gap:6px;font-size:.72rem;color:#cbd5e1}
+.interop-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.interop-line-legend{width:24px;height:3px;flex-shrink:0}
+#interopCanvas{width:100%;cursor:grab;display:block;border-radius:8px}
+#interopCanvas:active{cursor:grabbing}
+.interop-controls{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.interop-btn{background:#1e40af;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:.78rem;transition:.2s}
+.interop-btn:hover{background:#1d4ed8}
+.interop-btn.active{background:#059669}
+.interop-tooltip{position:fixed;background:#1e293b;color:#e2e8f0;padding:10px 14px;border-radius:10px;font-size:.78rem;pointer-events:none;z-index:999;display:none;max-width:280px;border:1px solid #334155;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.interop-info{background:#1e293b;border-radius:10px;padding:14px;margin-top:12px;color:#e2e8f0;font-size:.8rem;min-height:80px}
+.interop-info h4{color:#60a5fa;margin-bottom:8px}
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .header-top{flex-direction:column}
+  .stats-bar{padding:10px 14px}
+  .tab-content{padding:14px}
+  .systems-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="kpt-logo">KPT</div>
+    <div class="header-title">
+      <h1>Cadangan Pemetaan Sistem Digital RPTM 2026-2035</h1>
+      <p>Kementerian Pendidikan Tinggi Malaysia | DTU-KPT 2026 | <em style="opacity:.8">Klik badge di bawah untuk maklumat lanjut 👆</em></p>
+    </div>
+  </div>
+  <div class="header-badges">
+    <span class="hbadge hbadge-click" onclick="openFrameworkModal('mygovea')" title="Klik untuk maklumat MyGovEA">🏛 MyGovEA Framework ℹ</span>
+    <span class="hbadge hbadge-click" onclick="openFrameworkModal('togaf')" title="Klik untuk maklumat TOGAF">📊 TOGAF/ArchiMate ℹ</span>
+    <span class="hbadge hbadge-click" onclick="openBadgeModal('sistem')" title="Klik — senarai 29 sistem">📱 29 Sistem Digital ℹ</span>
+    <span class="hbadge hbadge-click" onclick="openBadgeModal('lonjakan')" title="Klik — 10 Lonjakan & pemilik">🎯 10 Lonjakan RPTM ℹ</span>
+    <span class="hbadge hbadge-click" onclick="openBadgeModal('ps')" title="Klik — 11 Perkhidmatan Sepunya">🏛 11 Perkhidmatan Sepunya ℹ</span>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-card" onclick="openBadgeModal('sistem')" title="Klik — lihat semua 29 sistem"><div class="stat-num">29</div><div class="stat-lbl">Jumlah Sistem</div></div>
+  <div class="stat-card green" onclick="openStatModal('selesai')" title="Klik — lihat sistem selesai"><div class="stat-num">3</div><div class="stat-lbl">Selesai (100%)</div></div>
+  <div class="stat-card orange" onclick="openStatModal('progress')" title="Klik — lihat sistem dalam pelaksanaan"><div class="stat-num">15</div><div class="stat-lbl">Dalam Pelaksanaan</div></div>
+  <div class="stat-card" onclick="openStatModal('dirancang')" title="Klik — lihat sistem dirancang"><div class="stat-num">9</div><div class="stat-lbl">Dirancang</div></div>
+  <div class="stat-card red" onclick="openStatModal('belum')" title="Klik — lihat sistem belum mula"><div class="stat-num">1</div><div class="stat-lbl">Belum Mula</div></div>
+  <div class="stat-card gold" onclick="openBadgeModal('ps')" title="Klik — lihat GAP PS3 Keusahawanan"><div class="stat-num">1</div><div class="stat-lbl">Gap PS (PS3 Tiada)</div></div>
+  <div class="stat-card red" onclick="openStatModal('duplikat')" title="Klik — lihat sistem duplikat"><div class="stat-num">1</div><div class="stat-lbl">Duplikat (MyIRIS)</div></div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('lonjakan',this)">🎯 Mengikut Lonjakan</button>
+  <button class="tab-btn" onclick="switchTab('ps',this)">🏛 Mengikut PS Cluster</button>
+  <button class="tab-btn" onclick="switchTab('jadual',this)">📋 Jadual Lengkap</button>
+  <button class="tab-btn" onclick="switchTab('blueprint',this)">📐 Blueprint EA</button>
+  <button class="tab-btn" onclick="switchTab('interop',this)">🕸 Interoperabiliti &amp; Integrasi</button>
+  <button class="tab-btn" onclick="switchTab('analisis',this)">📊 Analisis Terperinci</button>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <label>🔍</label>
+  <input type="text" id="searchInput" placeholder="Cari nama sistem, kod, pemilik..." oninput="filterSystems()">
+  <label>Status:</label>
+  <select id="filterStatus" onchange="filterSystems()">
+    <option value="">Semua</option>
+    <option value="selesai">Selesai</option>
+    <option value="progress">In Progress</option>
+    <option value="dirancang">Dirancang</option>
+    <option value="belum">Belum Mula</option>
+    <option value="duplikat">Kritikal/Duplikat</option>
+  </select>
+  <label>Lonjakan:</label>
+  <select id="filterLonjakan" onchange="filterSystems()">
+    <option value="">Semua</option>
+    <option value="1">L1</option><option value="2">L2</option><option value="3">L3</option>
+    <option value="4">L4</option><option value="5">L5</option><option value="6">L6</option>
+    <option value="7">L7</option><option value="8">L8</option><option value="9">L9</option>
+    <option value="10">L10</option>
+  </select>
+  <label>PS Cluster:</label>
+  <select id="filterPS" onchange="filterSystems()">
+    <option value="">Semua</option>
+    <option value="1">PS1-P&P</option><option value="2">PS2-Pelajar</option>
+    <option value="4">PS4-Industri</option><option value="5">PS5-Penyelidikan</option>
+    <option value="6">PS6-Kesihatan</option><option value="7">PS7-HR</option>
+    <option value="8">PS8-Kewangan</option><option value="9">PS9-QA</option>
+    <option value="11">PS11-Admin</option>
+  </select>
+  <button class="btn-reset" onclick="resetFilter()">Reset</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 1: BY LONJAKAN -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="tab-lonjakan" class="tab-content active">
+
+<div class="alert-box alert-info" style="margin-bottom:14px">
+  <strong>📌 Cara Guna:</strong> Klik pada setiap panel Lonjakan untuk kembangkan/tutup senarai sistem. Klik pada kad sistem untuk lihat butiran lengkap termasuk cadangan proses perniagaan dan maklumat EA.
+</div>
+
+<!-- LONJAKAN 1 -->
+<div class="section-header lonjakan" onclick="toggleSection('L1')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 1 — Pembangunan Holistik Pelajar</div>
+    <div class="section-sub">2 Sistem | Fokus: Kesejahteraan & Pengalaman Pelajar</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">Puan Fazidah binti Mustafa</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">SUB Perancangan Strategik, KPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">Mental Health Framework, My-NLEES</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L1">▼</span>
+</div>
+<div class="systems-container" id="L1">
+  <div class="systems-grid" id="grid-L1"></div>
+</div>
+
+<!-- LONJAKAN 2 -->
+<div class="section-header lonjakan" onclick="toggleSection('L2')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 2 — Kecemerlangan Akademik & Bakat</div>
+    <div class="section-sub">1 Sistem | Fokus: Pengurusan Bakat Akademik</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Prof. Dr. Harshita Aini binti Haroon</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">Pengarah AKEPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">MyMoheS Talent</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L2">▼</span>
+</div>
+<div class="systems-container" id="L2">
+  <div class="systems-grid" id="grid-L2"></div>
+</div>
+
+<!-- LONJAKAN 3 -->
+<div class="section-header lonjakan" onclick="toggleSection('L3')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 3 — Fleksibiliti & Kelayakan Digital</div>
+    <div class="section-sub">3 Sistem | Fokus: Pembelajaran Digital & Kelayakan</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Tn. Haji Ulaimi bin Yahya</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">TKP Perancangan, JPPKK</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">TCISE, ITD Platform, DLE</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L3">▼</span>
+</div>
+<div class="systems-container" id="L3">
+  <div class="systems-grid" id="grid-L3"></div>
+</div>
+
+<!-- LONJAKAN 4 -->
+<div class="section-header lonjakan" onclick="toggleSection('L4')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 4 — Kemampanan Kewangan</div>
+    <div class="section-sub">3 Sistem | Fokus: Tadbir Urus & Penjanaan Pendapatan</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">Encik Hasan bin Muda</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">SUB Kewangan, KPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">Revenue Governance, NFF Cost, ICLR/PTPTN</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L4">▼</span>
+</div>
+<div class="systems-container" id="L4">
+  <div class="systems-grid" id="grid-L4"></div>
+</div>
+
+<!-- LONJAKAN 5 -->
+<div class="section-header lonjakan" onclick="toggleSection('L5')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 5 — Tadbir Urus & Akauntabiliti</div>
+    <div class="section-sub">4 Sistem | Fokus: Governan, BI & Maklum Balas</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">Encik Ahmad Rizal bin Adnan</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">TKP JPT Governan & Pembangunan</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">LPU Talent Pool, Governance BI, Inclusive Feedback, MyMoheS Analytics</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L5">▼</span>
+</div>
+<div class="systems-container" id="L5">
+  <div class="systems-grid" id="grid-L5"></div>
+</div>
+
+<!-- LONJAKAN 6 -->
+<div class="section-header lonjakan" onclick="toggleSection('L6')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 6 — Ekosistem Penyelidikan & Inovasi</div>
+    <div class="section-sub">4 Sistem | Fokus: Pengurusan Penyelidikan & Repositori</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Prof. Dr. Zainal Amin bin Ayub</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">TKP JPT Akademik & Penyelidikan</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">RMS, NKI, MyRA, MyNEX</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L6">▼</span>
+</div>
+<div class="systems-container" id="L6">
+  <div class="systems-grid" id="grid-L6"></div>
+</div>
+
+<!-- LONJAKAN 7 -->
+<div class="section-header lonjakan" onclick="toggleSection('L7')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 7 — Internasionalisasi</div>
+    <div class="section-sub">4 Sistem | Fokus: Pelajar Antarabangsa & Alumni Global</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBhg. Datin Noorazah binti Omar</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">SUB Hubungan Antarabangsa, KPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">MyCAS, E2E Visa Digital, MyAlumni, MyIRIS (kongsi L10)</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L7">▼</span>
+</div>
+<div class="systems-container" id="L7">
+  <div class="systems-grid" id="grid-L7"></div>
+</div>
+
+<!-- LONJAKAN 8 -->
+<div class="section-header lonjakan" onclick="toggleSection('L8')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 8 — Pembelajaran Sepanjang Hayat (PSH)</div>
+    <div class="section-sub">4 Sistem | Fokus: Micro-credential, Kredit & eLearning</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Dr. Zurina binti Abdul Hamid</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">SUB Dasar & Penyelidikan, KPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">Micro-credential, Bank Kredit Akademik, eLLP, AI Metadata & Tagging</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L8">▼</span>
+</div>
+<div class="systems-container" id="L8">
+  <div class="systems-grid" id="grid-L8"></div>
+</div>
+
+<!-- LONJAKAN 9 -->
+<div class="section-header lonjakan" onclick="toggleSection('L9')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 9 — Kemampanan Alam Sekitar</div>
+    <div class="section-sub">1 Sistem | Fokus: Data Hub Alam Sekitar</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Ts. Abdul Razak bin Sabtu</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">TKP JPPKK Governan</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">MyEARTH</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L9">▼</span>
+</div>
+<div class="systems-container" id="L9">
+  <div class="systems-grid" id="grid-L9"></div>
+</div>
+
+<!-- LONJAKAN 10 -->
+<div class="section-header lonjakan" onclick="toggleSection('L10')">
+  <div>
+    <div class="section-title">🎯 Lonjakan 10 — Transformasi Digital KPT</div>
+    <div class="section-sub">4 Sistem | Fokus: Data Backbone, Analytics & Penarafan</div>
+    <div class="pemilik-card" onclick="event.stopPropagation()">
+      <div class="pemilik-item"><div class="lbl">Pemilik Lonjakan</div><div class="val">YBrs. Dr. Muhammad Farihan Irfan bin Mohd Nor</div></div>
+      <div class="pemilik-item"><div class="lbl">Jawatan</div><div class="val">Ketua HEAD, KPT</div></div>
+      <div class="pemilik-item"><div class="lbl">Sistem dalam Lonjakan</div><div class="val">UPUOnline, Gudang Data Raya, HEAD Dashboard, MyIRIS (kongsi L7)</div></div>
+    </div>
+  </div>
+  <span class="section-arrow" id="arrow-L10">▼</span>
+</div>
+<div class="systems-container" id="L10">
+  <div class="systems-grid" id="grid-L10"></div>
+</div>
+</div><!-- end tab-lonjakan -->
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 2: BY PS CLUSTER -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="tab-ps" class="tab-content">
+
+<div class="alert-box alert-warning">
+  <strong>⚠ Penemuan Jurang (Gap):</strong> PS3 (Keusahawanan) tidak mempunyai sebarang sistem digital dalam portfolio 29 sistem RPTM 2026-2035. Ini adalah jurang signifikan yang perlu ditangani dalam semakan berikut.
+</div>
+<div class="alert-box alert-danger">
+  <strong>🚨 Pertindihan Kritikal:</strong> PS10 (Fasiliti) juga tiada sistem khusus dalam portfolio. PS9 (Jaminan Kualiti) mengandungi isu duplikasi antara MyMoheS Analytics, HEAD Dashboard, Governance BI, dan MyIRIS — perlu penyatuan segera.
+</div>
+
+<!-- PS cluster sections rendered by JS -->
+<div id="ps-sections-container"></div>
+
+</div><!-- end tab-ps -->
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 3: JADUAL LENGKAP -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="tab-jadual" class="tab-content">
+<div class="table-wrap">
+<table id="mainTable">
+<thead>
+<tr>
+  <th>No.</th>
+  <th>Sistem / Singkatan</th>
+  <th>Kod RPTM</th>
+  <th>Lonjakan</th>
+  <th>Pemilik Lonjakan</th>
+  <th>Pemilik Projek</th>
+  <th>Pelaksana KPI</th>
+  <th>PS Cluster</th>
+  <th>Status 2026</th>
+  <th>💡 Cadangan Proses Perniagaan</th>
+  <th>🏛 Maklumat EA</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+</div><!-- end tab-jadual -->
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 4: BLUEPRINT EA -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="tab-blueprint" class="tab-content">
+
+<div class="blueprint-section">
+  <h2>📐 Pendekatan MyGovEA — Metodologi 5 Peringkat</h2>
+  <div class="methodology-grid">
+    <div class="method-stage" style="border-left-color:#003087">
+      <h4>Peringkat 1: Mulakan (Initiate)</h4>
+      <ul>
+        <li>Tetapkan Visi & Misi EA KPT</li>
+        <li>Kenalpasti Pihak Berkepentingan</li>
+        <li>Bentuk Jawatankuasa EA</li>
+        <li>Persetujuan Pengurusan Tertinggi</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#0057b7">
+      <h4>Peringkat 2: Nilai (Assess)</h4>
+      <ul>
+        <li>Dokumentasi Seni Bina Semasa</li>
+        <li>Analisis Jurang (Gap Analysis)</li>
+        <li>Pemetaan 29 Sistem ke PS</li>
+        <li>Kenalpasti Pertindihan</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#1a7a4a">
+      <h4>Peringkat 3: Takrifkan (Define)</h4>
+      <ul>
+        <li>Seni Bina Sasaran 2030</li>
+        <li>Peta Jalan Transformasi</li>
+        <li>Pelan Migrasi Sistem</li>
+        <li>Piawaian & Polisi Data</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#c8a400">
+      <h4>Peringkat 4: Bina/Operasi (Build)</h4>
+      <ul>
+        <li>Pelaksanaan Mengikut Keutamaan</li>
+        <li>Pembangunan Gudang Data Raya</li>
+        <li>Integrasi API antara Sistem</li>
+        <li>Pengujian & Pemasangan</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#c0392b">
+      <h4>Peringkat 5: Pantau (Monitor)</h4>
+      <ul>
+        <li>KPI Pelaksanaan EA</li>
+        <li>Audit Pematuhan Seni Bina</li>
+        <li>Semakan Berkala (6 Bulan)</li>
+        <li>Penambahbaikan Berterusan</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="blueprint-section">
+  <h2>🏛 Empat Lapisan Seni Bina (MyGovEA Framework)</h2>
+  <div class="methodology-grid">
+    <div class="method-stage" style="border-left-color:#003087;background:#dce8ff">
+      <h4 style="color:#003087">🔵 Seni Bina Perniagaan (Business Architecture)</h4>
+      <ul>
+        <li>Pemetaan Proses IPO</li>
+        <li>11 Perkhidmatan Sepunya</li>
+        <li>Model Kapabiliti</li>
+        <li>Penjajaran Strategik RPTM</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#9a5f00;background:#fff3d4">
+      <h4 style="color:#9a5f00">🟡 Seni Bina Aplikasi (Application Architecture)</h4>
+      <ul>
+        <li>29 Sistem Digital KPT</li>
+        <li>Peta Integrasi API</li>
+        <li>Single Sign-On (MyDigitalID)</li>
+        <li>Perkhidmatan Kongsi (Shared Services)</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#1a6b3a;background:#d4f0e2">
+      <h4 style="color:#1a6b3a">🟢 Seni Bina Data (Data Architecture)</h4>
+      <ul>
+        <li>Gudang Data Raya (Backbone)</li>
+        <li>Master Data Management</li>
+        <li>Data Governance & Kualiti</li>
+        <li>Open Data & Analytics</li>
+      </ul>
+    </div>
+    <div class="method-stage" style="border-left-color:#7a00a0;background:#f0d4f5">
+      <h4 style="color:#7a00a0">🟣 Seni Bina Teknologi (Technology Architecture)</h4>
+      <ul>
+        <li>Cloud-First (Azure/AWS)</li>
+        <li>API Gateway (MyGDX)</li>
+        <li>Blockchain (TCISE, Bank Kredit)</li>
+        <li>AI/ML Infrastructure</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="blueprint-section">
+  <h2>⚡ Keutamaan Pelaksanaan EA KPT 2026</h2>
+  <div class="alert-box alert-danger"><strong>PRIORITI 1 (Segera):</strong> Selesaikan isu duplikasi MyIRIS antara L7 dan L10. Tentukan satu pasukan pemilik. Gabungkan pembangunan dan elak pembaziran sumber.</div>
+  <div class="alert-box alert-warning"><strong>PRIORITI 2 (Q1-Q2 2026):</strong> Percepat pembangunan <strong>Gudang Data Raya</strong> (10C.3.P1) sebagai FONDASI — semua 28 sistem lain bergantung kepada backbone data ini. Tanpa ini, integrasi antara sistem akan gagal.</div>
+  <div class="alert-box alert-info"><strong>PRIORITI 3 (Q2-Q3 2026):</strong> Satukan 4 sistem pemantauan bertindih: MyMoheS Analytics + HEAD Dashboard + Governance BI + MyIRIS → satu platform analitik bersepadu. Jimat ≥60% kos pembangunan berbanding 4 sistem berasingan.</div>
+  <div class="alert-box alert-success"><strong>PRIORITI 4 (Q3-Q4 2026):</strong> Bangunkan Ekosistem Pembelajaran Digital (PS1) yang bersepadu: DLE sebagai platform induk merangkumi ITD, Micro-credential, eLLP dan AI Metadata. Ini menyokong Lonjakan 3 dan 8 secara serentak.</div>
+  <div class="alert-box alert-warning"><strong>GAP KRITIKAL:</strong> PS3 (Keusahawanan) tiada walau satu sistem. Perlu dimasukkan dalam semakan portfolio RPTM — cadangkan sistem 'MyEdu-Preneur' untuk pengurusan program keusahawanan IPT.</div>
+</div>
+
+<div class="blueprint-section">
+  <h2>🗺 Peta Integrasi 29 Sistem — Hubungan Utama</h2>
+  <div style="overflow-x:auto;font-size:.8rem">
+    <table style="min-width:600px;border-collapse:collapse">
+      <thead><tr style="background:#003087;color:#fff">
+        <th style="padding:8px 12px">Sistem Sumber</th>
+        <th style="padding:8px 12px">Sistem Penerima</th>
+        <th style="padding:8px 12px">Jenis Integrasi</th>
+        <th style="padding:8px 12px">Keutamaan</th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:#f8f9fe"><td style="padding:7px 12px">Gudang Data Raya</td><td>Semua 28 Sistem</td><td>Data Backbone / API</td><td style="color:#c0392b;font-weight:700">KRITIKAL</td></tr>
+        <tr><td style="padding:7px 12px">UPUOnline</td><td>Gudang Data Raya, TCISE, MyAlumni</td><td>API Terus</td><td style="color:#d35400;font-weight:700">Tinggi</td></tr>
+        <tr style="background:#f8f9fe"><td style="padding:7px 12px">TCISE (Blockchain)</td><td>UPUOnline, MyCAS, MyNEX, RMS</td><td>Verifikasi Kelayakan API</td><td style="color:#d35400;font-weight:700">Tinggi</td></tr>
+        <tr><td style="padding:7px 12px">MyMoheS Talent</td><td>MyNEX, LPU Talent Pool, RMS</td><td>Master Staff Record</td><td style="color:#d35400;font-weight:700">Tinggi</td></tr>
+        <tr style="background:#f8f9fe"><td style="padding:7px 12px">MyCAS + E2E Visa</td><td>JIM (Imigresen), Gudang Data Raya</td><td>Cross-Agency API</td><td style="color:#856404;font-weight:700">Sederhana</td></tr>
+        <tr><td style="padding:7px 12px">RMS</td><td>NKI, MyRA, MyNEX, Gudang Data Raya</td><td>Penyelidikan Ekosistem</td><td style="color:#856404;font-weight:700">Sederhana</td></tr>
+        <tr style="background:#f8f9fe"><td style="padding:7px 12px">DLE (LMS)</td><td>ITD, Micro-credential, eLLP, AI Metadata</td><td>Platform Induk Pembelajaran</td><td style="color:#856404;font-weight:700">Sederhana</td></tr>
+        <tr><td style="padding:7px 12px">ICLR/PTPTN</td><td>MyAlumni, Gudang Data Raya, LHDN/KWSP</td><td>Cross-Agency API</td><td style="color:#1a7a4a;font-weight:700">Rendah</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end tab-blueprint -->
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 5: INTEROPERABILITI -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div id="tab-interop" class="tab-content">
+
+<div class="alert-box alert-info" style="margin-bottom:12px">
+  <strong>🕸 Peta Interoperabiliti & Kesalinghubungan 29 Sistem Digital KPT</strong> — Rajah ini menunjukkan betapa kompleksnya hubungan antara sistem. Klik mana-mana nod untuk lihat hubungan sesebuah sistem. Hover untuk nama sistem. Guna butang untuk tapis jenis sambungan.
+</div>
+
+<div class="interop-controls">
+  <button class="interop-btn active" onclick="setFilter('all',this)">Semua Sambungan</button>
+  <button class="interop-btn" onclick="setFilter('backbone',this)">🗄 Gudang Data Raya</button>
+  <button class="interop-btn" onclick="setFilter('api',this)">🔗 API Integrasi</button>
+  <button class="interop-btn" onclick="setFilter('duplicate',this)">🚨 Bertindih/Duplikat</button>
+  <button class="interop-btn" onclick="setFilter('data',this)">📊 Perkongsian Data</button>
+  <button class="interop-btn" onclick="resetInterop()">↺ Reset</button>
+</div>
+
+<div class="interop-wrap">
+  <div class="interop-legend">
+    <span style="color:#94a3b8;font-weight:700;font-size:.75rem;margin-right:4px">KLUSTER PS:</span>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#3b82f6"></div>PS1 P&amp;P</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#8b5cf6"></div>PS2 Pelajar</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#f59e0b"></div>PS4/5 R&amp;D</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#ec4899"></div>PS6 Kesihatan</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#10b981"></div>PS7 HR</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#ef4444"></div>PS8 Kewangan</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#f97316"></div>PS9 QA</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#06b6d4"></div>PS11 Admin</div>
+    <div class="interop-legend-item"><div class="interop-legend-dot" style="background:#fbbf24;border:2px solid #fff"></div>Gudang Data Raya ⭐</div>
+    <span style="color:#94a3b8;font-weight:700;font-size:.75rem;margin-left:8px">SAMBUNGAN:</span>
+    <div class="interop-legend-item"><div class="interop-line-legend" style="background:#94a3b8"></div>Data/API</div>
+    <div class="interop-legend-item"><div class="interop-line-legend" style="background:#fbbf24;height:2px;border-top:2px dashed #fbbf24;background:none"></div>Backbone GDR</div>
+    <div class="interop-legend-item"><div class="interop-line-legend" style="background:#ef4444"></div>Bertindih 🚨</div>
+  </div>
+  <canvas id="interopCanvas" height="640"></canvas>
+  <div class="interop-info" id="interopInfo">
+    <h4>👆 Klik pada mana-mana nod sistem untuk lihat maklumat sambungan</h4>
+    <p style="color:#94a3b8">Klik nod untuk highlights semua hubungan sistem tersebut. Saiz nod menunjukkan bilangan sambungan (lebih besar = lebih banyak hubungan). <strong style="color:#fbbf24">Gudang Data Raya</strong> adalah nod paling besar kerana ia menjadi backbone kepada semua 28 sistem lain.</p>
+  </div>
+</div>
+
+<!-- EXPLANATION SECTION -->
+<div style="margin-top:18px;background:#0f172a;border-radius:14px;padding:16px">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+    <h3 style="color:#e2e8f0;font-size:1rem;margin:0">📋 Penerangan Terperinci Setiap Kesalinghubungan</h3>
+    <span style="background:#1e293b;color:#94a3b8;border-radius:20px;padding:3px 12px;font-size:.75rem">Klik setiap seksyen untuk kembangkan</span>
+  </div>
+  <div id="interopExplain"></div>
+</div>
+</div><!-- end tab-interop -->
+
+<!-- TAB: ANALISIS TERPERINCI -->
+<div class="tab-content" id="tab-analisis">
+  <div style="max-width:960px;margin:0 auto;font-size:.88rem;line-height:1.8;color:#1a2340">
+
+    <!-- TAJUK -->
+    <div style="background:linear-gradient(135deg,#003087,#1d4ed8);border-radius:14px;padding:20px 24px;margin-bottom:20px;color:#fff">
+      <h2 style="margin:0 0 6px;font-size:1.2rem;font-weight:800">📊 Analisis Terperinci EA KPT</h2>
+      <p style="margin:0;opacity:.85;font-size:.84rem">Analisis mendalam berdasarkan MyGovEA Framework, meliputi WoG, jurang EA, kematangan digital, dan cadangan arkitektur strategik untuk 29 sistem digital RPTM 2026-2035.</p>
+    </div>
+
+    <!-- SEKSYEN 1: WoG -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:18px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.anarr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'"
+           style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#e6f0ff;cursor:pointer;user-select:none">
+        <span style="font-weight:700;color:#003087;font-size:.92rem">🏛 1. Analisis Whole-of-Government (WoG) — Hubungan KPT dengan Agensi Kerajaan</span>
+        <span class="anarr" style="color:#003087;font-size:1.1rem">▼</span>
+      </div>
+      <div style="display:none;padding:18px 20px">
+        <div style="background:#e6f0ff;border-left:4px solid #003087;padding:12px 16px;border-radius:8px;margin-bottom:16px">
+          <strong style="color:#003087">Apakah Pendekatan Whole-of-Government (WoG)?</strong><br>
+          WoG merujuk kepada kaedah di mana kementerian, jabatan, dan agensi kerajaan bekerja secara bersepadu merentasi sempadan organisasi untuk mencapai matlamat dasar yang sama. Dalam konteks KPT, ini bermakna 29 sistem digital RPTM 2026-2035 bukan sahaja perlu berfungsi secara dalaman, tetapi mesti disepadukan dengan sistem dan agensi kerajaan persekutuan yang lain.
+        </div>
+
+        <h4 style="color:#003087;margin:14px 0 8px;font-size:.9rem">🔗 Hubungan KPT dengan Agensi Utama Kerajaan</h4>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>JPN — Jabatan Pendaftaran Negara</strong><br>
+          Sistem UPUOnline dan MyCAS perlu mengesahkan identiti pemohon menggunakan MyKad/data JPN. Tanpa integrasi langsung dengan MyData (platform JPN), proses pengesahan identiti pelajar dan ibu bapa masih dilakukan secara manual. <em>Cadangan: sertai MyData Framework JDN untuk akses API JPN.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>JIM — Jabatan Imigresen Malaysia</strong><br>
+          Sistem E2E Visa Digital dan MyCAS bergantung kepada data visa/permit tinggal pelajar antarabangsa yang dipegang oleh JIM. Proses kelulusan visa semasa masih memerlukan campur tangan manual antara EMGS, JIM, dan KPT. <em>Cadangan: API bersepadu E2E Visa mesti dihubungkan terus ke sistem JIM.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>PTPTN — Perbadanan Tabung Pendidikan Tinggi Nasional</strong><br>
+          Sistem ICLR/PTPTN dan NFF Cost System berkait rapat dengan data pinjaman, status pembayaran balik, dan formula pengiraan kos per pelajar yang diuruskan oleh PTPTN dan Kementerian Kewangan. Maklumat ini perlu disegerakkan secara automatik bagi memastikan ketepatan formula NFF. <em>Cadangan: integrasi API dua-hala antara NFF Cost System KPT dan sistem PTPTN.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>MQA — Malaysian Qualifications Agency</strong><br>
+          Sistem Micro-credential, Bank Kredit Akademik, dan TCISE memerlukan pengesahan dan akreditasi kelayakan daripada MQA. Pada masa ini, proses akreditasi micro-credential masih berasingan daripada sistem penarafan MQA. <em>Cadangan: TCISE dijadikan gateway pengesahan yang menghubungkan MQA, KPT, dan semua IPT.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>Lembaga Peperiksaan Malaysia (LPM)</strong><br>
+          TCISE (Sijil Kelayakan Akademik) bergantung kepada data SPM dan STPM dari LPM untuk mengesahkan kelayakan masuk pelajar. Integrasi API antara TCISE dan pangkalan data LPM akan menghapuskan keperluan pelajar menghantar salinan sijil secara manual. <em>Cadangan: API langsung LPM → TCISE → UPUOnline untuk aliran pengesahan automatik.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>JDN — Jabatan Digital Negara</strong><br>
+          Gudang Data Raya (GDR) KPT perlu dibangunkan mengikut piawaian data kebangsaan yang ditetapkan oleh JDN melalui Dasar Data Terbuka dan MyGovEA. GDR mesti berdaftar sebagai Sistem Maklumat Kritikal Negara dan mematuhi garis panduan Arkitek Data Nasional JDN. <em>Peringatan: Pembangunan GDR perlu mendapat kelulusan dan bimbingan JDN, bukan dibina secara terpencil.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+          <strong>MITI &amp; Agensi Inovasi (MOSTI/MRANTI)</strong><br>
+          Sistem RMS, NKI, MyRA, dan MyNEX yang memfokus kepada penyelidikan, inovasi, dan ekosistem akademik perlu diselaraskan dengan pangkalan data penyelidikan MOSTI dan MRANTI. Data geran penyelidikan, paten, dan harta intelek yang dicatatkan dalam RMS patut dicerminkan dalam sistem kebangsaan MOSTI. <em>Cadangan: RMS KPT dihubungkan dengan MyIPO dan portal geran MOSTI.</em>
+        </div>
+
+        <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:16px">
+          <strong>EPU &amp; MOF — Perbendaharaan Malaysia</strong><br>
+          Sistem Revenue Governance dan NFF Cost System yang menentukan formula pembiayaan IPT perlu selaras dengan sistem perancangan fiskal EPU dan Perbendaharaan. Keputusan NFF (Normative Funding Formula) memberi impak langsung kepada Belanjawan Persekutuan. <em>Cadangan: NFF Cost System KPT diintegrasikan dengan sistem Perbendaharaan untuk proses kelulusan bajet automatik.</em>
+        </div>
+
+        <h4 style="color:#003087;margin:14px 0 8px;font-size:.9rem">🌐 GDR sebagai Data Hub WoG</h4>
+        <div style="background:#fff8e6;border-left:4px solid #c8a400;padding:12px 16px;border-radius:8px;margin-bottom:12px">
+          GDR bukan sahaja berfungsi sebagai repositori data KPT, tetapi berpotensi menjadi <strong>Data Hub WoG untuk sektor pendidikan tinggi negara</strong>. Ini bermakna GDR perlu direka bentuk dari awal dengan kapasiti untuk menerima, memproses, dan berkongsi data dengan agensi luar KPT seperti EPU, Perbendaharaan, JDN, MOSTI, JPN, dan PTPTN. Seni bina GDR mesti mematuhi Rangka Kerja Interoperabiliti Kerajaan (MyGovEA) dan menggunakan piawaian API terbuka (REST/GraphQL) yang diiktiraf oleh JDN.
+        </div>
+
+        <h4 style="color:#003087;margin:14px 0 8px;font-size:.9rem">⚠ Risiko Silo Digital Jika WoG Diabaikan</h4>
+        <div style="background:#fff0f0;border-left:4px solid #c0392b;padding:12px 16px;border-radius:8px;margin-bottom:12px">
+          Jika 29 sistem KPT dibangunkan secara berasingan tanpa pertimbangan WoG:<br>
+          • Data pelajar akan wujud dalam silo yang berbeza di JPN, KPT, PTPTN, MQA, dan IPT — mewujudkan inkonsistensi dan pertindihan data.<br>
+          • Sistem pengesahan kelayakan (TCISE, UPUOnline, MyCAS) perlu menyimpan salinan data dari agensi lain, membawa risiko keselamatan dan ketidaktepatan.<br>
+          • Pelaporan dasar kepada Parlimen dan EPU memerlukan penyatuan data manual yang mahal dan rawan kepada kesilapan.<br>
+          • Kos pembangunan dan penyelenggaraan sistem meningkat apabila setiap kementerian membangunkan fungsi yang sama secara berasingan.
+        </div>
+
+        <h4 style="color:#003087;margin:14px 0 8px;font-size:.9rem">✅ Cadangan Mekanisme Tadbir Urus WoG</h4>
+        <div style="background:#e8f5e9;border-left:4px solid #1a7a4a;padding:12px 16px;border-radius:8px">
+          <strong>a)</strong> Tubuhkan <em>Jawatankuasa Data Antara Agensi KPT</em> dengan ahli dari JPN, PTPTN, MQA, JDN, dan IPT terpilih — bermesyuarat suku tahunan untuk menyelaraskan piawaian data dan integrasi API.<br><br>
+          <strong>b)</strong> Semua API yang menghubungkan sistem KPT dengan agensi luar perlu didaftarkan dalam <em>Direktori API Kerajaan Malaysia</em> di bawah penyeliaan JDN.<br><br>
+          <strong>c)</strong> GDR mesti mendapat taraf <em>Infrastruktur Maklumat Kritikal Negara (IMKN)</em> di bawah Akta Keselamatan Siber 2018 — dengan keperluan ketersediaan 99.9%, perlindungan data, dan audit tahunan.<br><br>
+          <strong>d)</strong> Pelantikan seorang <em>Arkitek Data KPT</em> (Chief Data Architect) yang bertanggungjawab memastikan semua sistem KPT mematuhi piawaian WoG dan MyGovEA Framework semasa reka bentuk, bukan selepas pembangunan.
+        </div>
+      </div>
+    </div>
+
+    <!-- SEKSYEN 2: JURANG EA -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:18px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.anarr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'"
+           style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fef9ec;cursor:pointer;user-select:none">
+        <span style="font-weight:700;color:#92400e;font-size:.92rem">⚠ 2. Jurang EA (EA Gap Analysis) — Sistem Tiada & Perkhidmatan Sepunya Tidak Lengkap</span>
+        <span class="anarr" style="color:#92400e;font-size:1.1rem">▼</span>
+      </div>
+      <div style="display:none;padding:18px 20px">
+        <div style="background:#fff8e6;border-left:4px solid #c8a400;padding:12px 16px;border-radius:8px;margin-bottom:14px">
+          Berdasarkan pemetaan 29 sistem kepada 11 Perkhidmatan Sepunya (PS) dalam MyGovEA Framework KPT, terdapat <strong>2 GAP kritikal</strong> yang memerlukan perhatian segera dalam fasa perancangan RPTM 2026-2030.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div style="background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:14px">
+            <div style="color:#dc2626;font-weight:700;font-size:.88rem;margin-bottom:6px">🚨 GAP 1: PS3 Keusahawanan — Tiada Sistem</div>
+            <p style="margin:0;font-size:.83rem;color:#374151">Tiada satu pun sistem dalam RPTM 2026-2035 yang secara khusus menyokong ekosistem keusahawanan pelajar dan graduan. Perkhidmatan Sepunya PS3 sepenuhnya tidak diliputi, mewujudkan jurang dalam misi KPT membangunkan graduan yang berdaya saing dan berupaya mencipta pekerjaan.</p>
+            <div style="margin-top:10px;background:#fee2e2;border-radius:6px;padding:8px 10px;font-size:.8rem;color:#b91c1c"><strong>Impak:</strong> Ekosistem keusahawanan pelajar (startup IPT, inkubator, accelerator) tidak mempunyai platform digital yang diselaraskan di peringkat KPT.</div>
+          </div>
+          <div style="background:#fff8e6;border:1px solid #fcd34d;border-radius:10px;padding:14px">
+            <div style="color:#92400e;font-weight:700;font-size:.88rem;margin-bottom:6px">⚠ GAP 2: PS10 Fasiliti — Sistem Dirancang Tetapi Belum Mula</div>
+            <p style="margin:0;font-size:.83rem;color:#374151">Sistem IFMS (Integrated Facilities Management System) dirancang dalam RPTM tetapi belum mempunyai masa mula pelaksanaan yang pasti. Pengurusan fasiliti IPT (padang, makmal, dewan, infrastruktur) masih dilakukan secara berasingan tanpa platform bersepadu.</p>
+            <div style="margin-top:10px;background:#fef3c7;border-radius:6px;padding:8px 10px;font-size:.8rem;color:#78350f"><strong>Impak:</strong> Potensi pembaziran aset dan kegunaan ruang yang tidak optimum di 20 IPTA seluruh Malaysia.</div>
+          </div>
+        </div>
+
+        <div style="background:#e6f0ff;border-left:4px solid #003087;padding:12px 16px;border-radius:8px">
+          <strong style="color:#003087">Cadangan Tindakan:</strong><br>
+          • PS3: Masukkan sistem Keusahawanan Digital Pelajar (e-Usahawan KPT) dalam Rancangan Induk RPTM 2026-2030 Semakan.<br>
+          • PS10: Percepat IFMS dengan menetapkan tarikh mula Q1 2027 dan lantik Pemilik Sistem daripada Bahagian Pengurusan Fasiliti KPT.
+        </div>
+      </div>
+    </div>
+
+    <!-- SEKSYEN 3: KEMATANGAN DIGITAL -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:18px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.anarr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'"
+           style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#f0fdf4;cursor:pointer;user-select:none">
+        <span style="font-weight:700;color:#14532d;font-size:.92rem">📈 3. Matriks Kematangan Digital — Kedudukan 29 Sistem dalam Spektrum Kematangan</span>
+        <span class="anarr" style="color:#14532d;font-size:1.1rem">▼</span>
+      </div>
+      <div style="display:none;padding:18px 20px">
+        <p style="color:#374151;margin-bottom:14px">Berdasarkan penilaian terhadap status 2026, skop, dan tahap integrasi, 29 sistem KPT dapat dikategorikan kepada 4 peringkat kematangan digital mengikut kerangka Gartner Digital Maturity Model yang disesuaikan dengan konteks MyGovEA.</p>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">
+          <div style="background:#dcfce7;border-radius:10px;padding:12px 14px">
+            <div style="font-weight:700;color:#14532d;margin-bottom:6px">🟢 Tahap 4 — Transformasi Digital (3 Sistem)</div>
+            <p style="font-size:.82rem;color:#374151;margin:0">GDR, UPUOnline, SPeSS — sistem ini telah beroperasi sepenuhnya dan menjadi tulang belakang transformasi digital KPT. Fokus seterusnya: pengoptimuman AI/ML dan penyepaduan WoG.</p>
+          </div>
+          <div style="background:#dbeafe;border-radius:10px;padding:12px 14px">
+            <div style="font-weight:700;color:#1e3a8a;margin-bottom:6px">🔵 Tahap 3 — Penyepaduan (15 Sistem)</div>
+            <p style="font-size:.82rem;color:#374151;margin:0">MyRA, MyNEX, NKI, RMS, MyCAS, E2E Visa, ICLR, TCISE, Bank Kredit, Micro-credential, Revenue Gov., MyIRIS, SiMaSK, MySPAP, AISHE — dalam pelaksanaan aktif dengan integrasi sederhana.</p>
+          </div>
+          <div style="background:#fef9ec;border-radius:10px;padding:12px 14px">
+            <div style="font-weight:700;color:#78350f;margin-bottom:6px">🟡 Tahap 2 — Digitalisasi (9 Sistem)</div>
+            <p style="font-size:.82rem;color:#374151;margin:0">HRMIS 2.0, SMBU, eSMM, e-Pelajar, SMPJ, SPKPM, KPQR, IFMS, NFF — dirancang atau dalam peringkat awal, proses masih bergantung kepada manual sebahagiannya.</p>
+          </div>
+          <div style="background:#fff0f0;border-radius:10px;padding:12px 14px">
+            <div style="font-weight:700;color:#dc2626;margin-bottom:6px">🔴 Tahap 1 — Pemula (1 Sistem + 1 Duplikat)</div>
+            <p style="font-size:.82rem;color:#374151;margin:0">NFF Cost System (belum mula) dan MyIRIS (duplikat dengan RMS) — memerlukan keputusan segera sama ada diteruskan, digabungkan, atau dibatalkan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEKSYEN 4: CADANGAN ARKITEKTUR -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:18px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.anarr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'"
+           style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#f0f4ff;cursor:pointer;user-select:none">
+        <span style="font-weight:700;color:#1e3a8a;font-size:.92rem">🏗 4. Cadangan Arkitektur Strategik — Pelan Tindakan EA KPT 2026-2030</span>
+        <span class="anarr" style="color:#1e3a8a;font-size:1.1rem">▼</span>
+      </div>
+      <div style="display:none;padding:18px 20px">
+
+        <div style="background:#e6f0ff;border-left:4px solid #003087;padding:12px 16px;border-radius:8px;margin-bottom:14px">
+          <strong style="color:#003087">Prinsip Panduan Arkitektur EA KPT</strong><br>
+          Berdasarkan analisis 29 sistem dan MyGovEA Framework, terdapat 5 prinsip panduan yang perlu menjadi asas kepada setiap keputusan reka bentuk dan pembangunan sistem KPT.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px">
+          <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;border-left:3px solid #003087">
+            <strong style="color:#003087">P1 — GDR sebagai Pusat Data Tunggal (Single Source of Truth)</strong><br>
+            <span style="font-size:.83rem">Semua 28 sistem lain MESTI membaca dan menulis data melalui GDR atau API yang bersambung kepada GDR. Tiada sistem boleh menyimpan data pelajar, kakitangan, atau kewangan secara berasingan tanpa penyegerakan GDR. Ini menghapuskan masalah data silo dan ketidakkonsistenan.</span>
+          </div>
+          <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;border-left:3px solid #1d4ed8">
+            <strong style="color:#1d4ed8">P2 — API-First Architecture</strong><br>
+            <span style="font-size:.83rem">Setiap fungsi sistem perlu didedahkan sebagai API sebelum dibina sebagai antara muka pengguna (UI). Ini membolehkan sistem lain dan agensi kerajaan menggunakan fungsi tersebut tanpa perlu mengakses UI secara terus. Piawaian: RESTful API, JSON format, OAuth 2.0 untuk keselamatan.</span>
+          </div>
+          <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;border-left:3px solid #059669">
+            <strong style="color:#059669">P3 — Zero-Duplikasi Data</strong><br>
+            <span style="font-size:.83rem">Kes MyIRIS-RMS menunjukkan bahaya pembangunan tanpa pemetaan EA. Setiap sistem baru MESTI menjalani semakan EA (EA Review Gate) sebelum kelulusan bajet untuk memastikan tiada pertindihan fungsi atau data dengan sistem sedia ada.</span>
+          </div>
+          <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;border-left:3px solid #d97706">
+            <strong style="color:#d97706">P4 — Keselamatan Siber by Design</strong><br>
+            <span style="font-size:.83rem">Setiap sistem KPT yang mengendalikan data pelajar, kewangan, atau penyelidikan perlu mematuhi NIST Cybersecurity Framework dan Akta Keselamatan Siber 2018. GDR sebagai IMKN memerlukan ISO 27001 dan audit keselamatan dwi-tahunan.</span>
+          </div>
+          <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;border-left:3px solid #7c3aed">
+            <strong style="color:#7c3aed">P5 — Pelan Migrasi Awan (Cloud Migration Roadmap)</strong><br>
+            <span style="font-size:.83rem">Dalam tempoh RPTM 2026-2030, 15 sistem dalam pelaksanaan perlu dinilai kelayakan migrasi ke awan kerajaan (G-Cloud atau Approved Cloud Provider). Keutamaan: sistem dengan keperluan skalabiliti tinggi seperti UPUOnline (musim kemasukan) dan MyCAS (data pelajar antarabangsa).</span>
+          </div>
+        </div>
+
+        <div style="background:#e8f5e9;border-left:4px solid #1a7a4a;padding:12px 16px;border-radius:8px">
+          <strong style="color:#1a7a4a">Fasa Pelaksanaan Disarankan:</strong><br>
+          <strong>Fasa 1 (2026-2027):</strong> Kukuhkan GDR sebagai backbone, selesaikan 3 sistem hampir siap, mulakan integrasi WoG dengan JPN dan MQA.<br>
+          <strong>Fasa 2 (2027-2028):</strong> Lancarkan 9 sistem dirancang, laksanakan EA Review Gate untuk semua sistem baru, selesaikan isu MyIRIS-RMS.<br>
+          <strong>Fasa 3 (2029-2030):</strong> Integrasi penuh WoG, pelaksanaan AI/analytics di atas GDR, mulakan perancangan PS3 Keusahawanan.
+        </div>
+      </div>
+    </div>
+
+    <!-- SEKSYEN 5: KESEDIAAN INTEGRASI -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:18px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.anarr').textContent=this.nextElementSibling.style.display==='block'?'▲':'▼'"
+           style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fdf4ff;cursor:pointer;user-select:none">
+        <span style="font-weight:700;color:#6b21a8;font-size:.92rem">🔌 5. Kesediaan Integrasi — Penilaian Kesiapan Teknikal 29 Sistem</span>
+        <span class="anarr" style="color:#6b21a8;font-size:1.1rem">▼</span>
+      </div>
+      <div style="display:none;padding:18px 20px">
+        <p style="color:#374151;margin-bottom:12px">Berdasarkan analisis kesalinghubungan (interoperabiliti), berikut adalah penilaian kesediaan teknikal sistem-sistem utama KPT untuk integrasi penuh dengan ekosistem digital kerajaan.</p>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+            <thead>
+              <tr style="background:#1e3a8a;color:#fff">
+                <th style="padding:10px 12px;text-align:left;border-radius:6px 0 0 0">Sistem</th>
+                <th style="padding:10px 12px;text-align:center">Sambungan Aktif</th>
+                <th style="padding:10px 12px;text-align:center">Kesediaan API</th>
+                <th style="padding:10px 12px;text-align:center">Keutamaan Integrasi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#f4f6fb"><td style="padding:9px 12px;border-bottom:1px solid #e2e8f0"><strong>GDR (Gudang Data Raya)</strong></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0">28</td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#dcfce7;color:#14532d;border-radius:4px;padding:2px 8px">Tinggi</span></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#dc2626;color:#fff;border-radius:4px;padding:2px 8px">Kritikal</span></td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #e2e8f0"><strong>UPUOnline</strong></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0">8</td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#dcfce7;color:#14532d;border-radius:4px;padding:2px 8px">Tinggi</span></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#dc2626;color:#fff;border-radius:4px;padding:2px 8px">Kritikal</span></td></tr>
+              <tr style="background:#f4f6fb"><td style="padding:9px 12px;border-bottom:1px solid #e2e8f0"><strong>TCISE</strong></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0">6</td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#fef9ec;color:#92400e;border-radius:4px;padding:2px 8px">Sederhana</span></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#d97706;color:#fff;border-radius:4px;padding:2px 8px">Tinggi</span></td></tr>
+              <tr><td style="padding:9px 12px;border-bottom:1px solid #e2e8f0"><strong>MyCAS</strong></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0">5</td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#fef9ec;color:#92400e;border-radius:4px;padding:2px 8px">Sederhana</span></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#d97706;color:#fff;border-radius:4px;padding:2px 8px">Tinggi</span></td></tr>
+              <tr style="background:#f4f6fb"><td style="padding:9px 12px;border-bottom:1px solid #e2e8f0"><strong>NFF Cost System</strong></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0">3</td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#fee2e2;color:#dc2626;border-radius:4px;padding:2px 8px">Rendah</span></td><td style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="background:#dc2626;color:#fff;border-radius:4px;padding:2px 8px">Kritikal</span></td></tr>
+              <tr><td style="padding:9px 12px"><strong>MyIRIS</strong></td><td style="padding:9px 12px;text-align:center">2</td><td style="padding:9px 12px;text-align:center"><span style="background:#fee2e2;color:#dc2626;border-radius:4px;padding:2px 8px">Rendah</span></td><td style="padding:9px 12px;text-align:center"><span style="background:#6b7280;color:#fff;border-radius:4px;padding:2px 8px">Semak Semula</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px;background:#f0f4ff;border-radius:8px;padding:10px 14px;font-size:.82rem;color:#374151">
+          <strong>Nota:</strong> Kesediaan API dinilai berdasarkan dokumentasi teknikal yang tersedia, status pembangunan semasa, dan rujukan kepada seni bina yang dinyatakan dalam RPTM 2026-2035 KPT.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end tab-analisis -->
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- MODAL OVERLAY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle">Maklumat</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOOLTIP for graph -->
+<div class="interop-tooltip" id="interopTooltip"></div>
+
+<div class="footer">
+  DTU-KPT 2026
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT DATA & LOGIC -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+
+// ── MASTER DATA ─────────────────────────────────────
+const lonjakanOwners = {
+  1: {nama:"Puan Fazidah binti Mustafa", jawatan:"SUB Perancangan Strategik, KPT"},
+  2: {nama:"YBrs. Prof. Dr. Harshita Aini binti Haroon", jawatan:"Pengarah AKEPT"},
+  3: {nama:"YBrs. Tn. Haji Ulaimi bin Yahya", jawatan:"TKP Perancangan, JPPKK"},
+  4: {nama:"Encik Hasan bin Muda", jawatan:"SUB Kewangan, KPT"},
+  5: {nama:"Encik Ahmad Rizal bin Adnan", jawatan:"TKP JPT Governan & Pembangunan"},
+  6: {nama:"YBrs. Prof. Dr. Zainal Amin bin Ayub", jawatan:"TKP JPT Akademik & Penyelidikan"},
+  7: {nama:"YBhg. Datin Noorazah binti Omar", jawatan:"SUB Hubungan Antarabangsa, KPT"},
+  8: {nama:"YBrs. Dr. Zurina binti Abdul Hamid", jawatan:"SUB Dasar & Penyelidikan, KPT"},
+  9: {nama:"YBrs. Ts. Abdul Razak bin Sabtu", jawatan:"TKP JPPKK Governan"},
+  10:{nama:"YBrs. Dr. Muhammad Farihan Irfan bin Mohd Nor", jawatan:"Ketua HEAD, KPT"}
+};
+
+const psNames = {
+  1:"PS1 — Pengajaran & Pembelajaran",
+  2:"PS2 — Pelajar & Alumni",
+  3:"PS3 — Keusahawanan ⚠ TIADA SISTEM",
+  4:"PS4 — Jaringan Industri & Masyarakat",
+  5:"PS5 — Penyelidikan / RDICE",
+  6:"PS6 — Kesihatan",
+  7:"PS7 — Sumber Manusia",
+  8:"PS8 — Kewangan & Perolehan",
+  9:"PS9 — Jaminan Kualiti",
+  10:"PS10 — Fasiliti ⚠ TIADA SISTEM",
+  11:"PS11 — Pentadbiran Am"
+};
+
+const systems = [
+  {no:1,nama:"Sistem UPUOnline Bersepadu",singkatan:"UPUOnline",kod:"10D.3.P1",lonjakan:10,ps:2,
+   pemilik:"BKPA, JPT",pengguna:"Pelajar Lepasan SPM/STPM (~300K/tahun)",status:"progress",siap:65,
+   fungsi:"Portal pemohonan tunggal (single window) untuk kemasukan pelajar domestik ke IPTA/Politeknik/KK; padanan AI berasaskan merit; integrasi MyDigitalID dan iPayment.",
+   teknologi:"AI/ML, Cloud, Mobile App (UPUPocket), API MyGDX, SSO MyDigitalID, iPayment",
+   eaLayers:["B","A"],pelaksanaKPI:"BKPA (KPT), JPT, Universiti Awam",
+   cadangan:"① Laksanakan pengesahan sijil SPM/STPM automatik masa nyata melalui API TCISE-JPN. ② Tambah modul 'Penasihat Program' AI yang cadangkan program berdasarkan profil pelajar dan data kerjaya MyNEX. ③ Bangunkan 'Merit Predictor' dengan data historis 5 tahun. ④ Notifikasi proaktif (SMS/WhatsApp) setiap perubahan status permohonan.",
+   eaInfo:"Lapisan B: Proses Kemasukan Pelajar (BRM002.009). Lapisan A: Portal Web + UPUPocket Mobile. Lapisan D: Master Student Record → Gudang Data Raya. Lapisan T: Cloud Azure, API MyGDX. Status MyGovEA: Peringkat 3 (Define) — sedang membina seni bina sasaran.",
+   rptm:"RPTM 10D.3, Inisiatif AI Single Window",ipo:{i:"IC Pelajar, Keputusan SPM/STPM, Senarai Program",p:"Padanan merit AI, Proses tawaran, Semakan bayaran",o:"Tawaran kemasukan, Notifikasi, Rekod dalam Gudang Data"}},
+  {no:2,nama:"Malaysia's University Centralised Admission System",singkatan:"MyCAS",kod:"7D.3.P1",lonjakan:7,ps:2,
+   pemilik:"EMGS + BPPT, JPT",pengguna:"Pelajar Antarabangsa (~50K/tahun)",status:"progress",siap:40,
+   fungsi:"Portal kemasukan pelajar antarabangsa ke IPTA dan IPTS Malaysia; pemeriksaan kelayakan akademik asing; integrasi proses visa dengan EMGS.",
+   teknologi:"API, Cloud, Analytics, SSO MyDigitalID, MyGDX",
+   eaLayers:["B","A"],pelaksanaKPI:"EMGS, BPPT (JPT)",
+   cadangan:"① Satukan backend data dengan UPUOnline melalui Gudang Data Raya — satu rekod pelajar untuk domestik dan antarabangsa. ② Auto-verify kelayakan akademik asing (A-Level, IB, dll) melalui API semakan sijil antarabangsa. ③ Tambah modul ranking universiti untuk bantu pelajar buat pilihan bijak. ④ Integrasi terus dengan E2E Visa untuk proses visa serentak.",
+   eaInfo:"Lapisan B: Proses Kemasukan Antarabangsa. Lapisan A: Portal Pelajar Asing. Lapisan D: Rekod Pelajar Asing → Gudang Data Raya. Lapisan T: API integrasi EMGS, MyGDX. Status MyGovEA: Peringkat 2 (Assess) — masih dalam fasa penilaian semasa.",
+   rptm:"RPTM 7D.3.P1",ipo:{i:"Passport, Kelayakan Asing, Program Pilihan",p:"Semakan kelayakan, Padanan program, Proses tawaran",o:"Tawaran kemasukan, Data ke E2E Visa, Rekod EMGS"}},
+  {no:3,nama:"Trusted Credentials & Intelligent Student Ecosystem",singkatan:"TCISE",kod:"3F.2.P1",lonjakan:3,ps:1,
+   pemilik:"BPS, KPT",pengguna:"IPT, Majikan, Pelajar",status:"progress",siap:50,
+   fungsi:"Sistem pengesahan kelayakan akademik berasaskan blockchain; sijil digital yang boleh disahkan oleh mana-mana pihak tanpa menghubungi institusi asal.",
+   teknologi:"Blockchain, Digital Certificate, API, Verifikasi Kriptografi",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BPS (KPT), IPT Seluruh Malaysia",
+   cadangan:"① Jadikan TCISE sebagai 'Repositori Kelayakan Nasional Tunggal' — semua sistem lain (UPUOnline, MyCAS, MyNEX, RMS) query TCISE untuk pengesahan sijil. ② Laksanakan API terbuka untuk majikan semak kelayakan graduan secara self-service. ③ Tambah sokongan mikro-sijil (Open Badges) dari Micro-credential Platform. ④ Integrasi dengan MyAlumni untuk rekod kelayakan sepanjang hayat.",
+   eaInfo:"Lapisan B: Proses Pengesahan Kelayakan. Lapisan A: Portal Blockchain Credential. Lapisan D: Hash Dokumen (Blockchain Immutable Record). Lapisan T: Hyperledger Fabric / Ethereum. Status MyGovEA: Peringkat 3 (Define). PENTING: Sistem ini adalah 'Single Source of Truth' untuk kelayakan akademik.",
+   rptm:"RPTM 3F.2.P1",ipo:{i:"Sijil Akademik, Transkrip, ID Pelajar",p:"Hash blockchain, Pengesahan kriptografi, Simpan rekod",o:"Sijil Digital Disahkan, API Pengesahan, Rekod Blockchain"}},
+  {no:4,nama:"Pendigitalan Visa & Pas Pelajar Antarabangsa (E2E)",singkatan:"E2E Visa Digital",kod:"7D.3.P2",lonjakan:7,ps:2,
+   pemilik:"EMGS, JPT",pengguna:"Pelajar Antarabangsa, EMGS, Universiti",status:"dirancang",siap:15,
+   fungsi:"Digitalisasi penuh proses visa dan pas pelajar antarabangsa dari permohonan hingga pengeluaran; integrasi dengan JIM (Jabatan Imigresen Malaysia).",
+   teknologi:"API, Cloud, Digital Signature, Integrasi JIM",
+   eaLayers:["B","A"],pelaksanaKPI:"EMGS, JPT, JIM (Jabatan Imigresen)",
+   cadangan:"① Laksanakan STP (Straight-Through Processing) untuk permohonan visa standard — tanpa intervensi manual. ② Integrasi 3-hala antara MyCAS + E2E Visa + JIM dalam satu aliran proses. ③ Tambah modul 'Visa Status Tracker' untuk pelajar semak status masa nyata melalui mobile app. ④ Auto-alert universiti apabila visa pelajar hampir tamat.",
+   eaInfo:"Lapisan B: Proses Permohonan Visa Pelajar. Lapisan A: Portal Visa Digital. Lapisan D: Rekod Visa → Gudang Data Raya. Lapisan T: API JIM, Digital Signature. Status MyGovEA: Peringkat 1 (Initiate). Cross-agency integration dengan JIM adalah risiko utama.",
+   rptm:"RPTM 7D.3.P2",ipo:{i:"Passport, Data Pelajar dari MyCAS, Dokumen Kelayakan",p:"Semakan imigresen, Proses visa digital, Pembayaran yuran",o:"Visa Digital, Pas Pelajar, Data ke JIM"}},
+  {no:5,nama:"Kumpulan Bakat (Talent-Pool) LPU UA",singkatan:"LPU Talent Pool",kod:"5B.1.P1",lonjakan:5,ps:7,
+   pemilik:"BGA, KPT",pengguna:"Lembaga Pengarah UA, KPT",status:"selesai",siap:100,
+   fungsi:"Pangkalan data calon ahli Lembaga Pengarah UA (universiti awam); menyokong proses pemilihan dan pencalonan ahli lembaga secara sistematik.",
+   teknologi:"Database, Portal Web, Laporan",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BGA (KPT)",
+   cadangan:"① Integrasi dengan MyMoheS Talent sebagai 'sub-modul Bakat Lembaga' — elak dua pangkalan data profil individu berasingan. ② Tambah modul penilaian kompetensi ahli lembaga berdasarkan keperluan semasa. ③ Bangunkan succession planning dashboard untuk identifikasi calon gantian. ④ Auto-semak konflik kepentingan melalui integrasi data SPRM.",
+   eaInfo:"Lapisan B: Proses Pencalonan & Pemilihan Lembaga. Lapisan A: Portal Talent Pool (Web). Lapisan D: Profil Ahli Lembaga. Status MyGovEA: Peringkat 5 (Monitor) — sistem sudah operasi, perlu penyepaduan dengan MyMoheS Talent.",
+   rptm:"RPTM 5B.1.P1",ipo:{i:"Profil Calon, Kelayakan, Pengalaman Profesional",p:"Semakan kelayakan, Proses pencalonan, Kelulusan",o:"Senarai Calon Layak, Rekod Pelantikan, Laporan Lembaga"}},
+  {no:6,nama:"Program Perkongsian Akauntabiliti Berasaskan Data",singkatan:"Governance BI",kod:"5C.2.P1",lonjakan:5,ps:9,
+   pemilik:"BGA, KPT",pengguna:"Pengurusan KPT, UA",status:"dirancang",siap:20,
+   fungsi:"Platform Business Intelligence untuk tadbir urus — laporan KPI lembaga, pematuhan, dan akauntabiliti institusi pendidikan tinggi.",
+   teknologi:"BI/Analytics, Dashboard, Big Data",
+   eaLayers:["A","D"],pelaksanaKPI:"BGA (KPT), HEAD",
+   cadangan:"① CADANGAN UTAMA: Gabungkan Governance BI + HEAD Dashboard + MyMoheS Analytics + MyIRIS ke dalam SATU platform BI bersepadu — bukannya 4 sistem berasingan dengan fungsi bertindih. ② Gunakan Power BI / Tableau sebagai platform standard. ③ Takrifkan 'Golden KPI Dataset' yang jelas supaya semua laporan bersumber dari satu data yang sama. ④ Tambah notifikasi automatik kepada pengurusan bila KPI dibawah sasaran.",
+   eaInfo:"Lapisan A: Platform BI/Dashboard. Lapisan D: Data KPI dan Pematuhan → Gudang Data Raya. Status MyGovEA: Peringkat 2 (Assess). RISIKO: Pertindihan fungsi dengan HEAD Dashboard (L10) dan MyMoheS Analytics (L5) — perlu keputusan penyatuan segera.",
+   rptm:"RPTM 5C.2.P1",ipo:{i:"KPI Institusi, Data Pematuhan, Laporan Lembaga",p:"Analisis BI, Visualisasi dashboard, Alert threshold",o:"Laporan Eksekutif, Skor Pematuhan, Dashboard Real-time"}},
+  {no:7,nama:"Platform Digital Input/Maklum Balas Inklusif",singkatan:"Inclusive Feedback",kod:"5D.2.P1",lonjakan:5,ps:9,
+   pemilik:"BGA, KPT",pengguna:"Semua Stakeholder (pelajar, staf, awam)",status:"dirancang",siap:10,
+   fungsi:"Platform pengumpulan maklum balas pelbagai saluran (web, mobile, SMS) dari semua stakeholder IPT; analisis sentimen AI.",
+   teknologi:"Web, Mobile, SMS, AI Sentiment Analysis, API",
+   eaLayers:["A","D"],pelaksanaKPI:"BGA (KPT)",
+   cadangan:"① Satukan dengan My-NLEES sebagai 'Platform Maklum Balas & Survei Nasional' — satu sistem untuk semua jenis maklum balas pelajar dan stakeholder. ② Tambah analisis sentimen AI berbahasa Melayu. ③ Pastikan anonimiti penyumbang maklum balas untuk galakkan ketelusan. ④ Cipta dashboard 'Voice of Campus' yang mudah dibaca oleh pengurusan.",
+   eaInfo:"Lapisan A: Platform Feedback Multi-channel. Lapisan D: Data Sentimen → Gudang Data Raya. Status MyGovEA: Peringkat 1 (Initiate). RISIKO: Pertindihan dengan My-NLEES (L1) yang juga kumpul maklum balas pelajar.",
+   rptm:"RPTM 5D.2.P1",ipo:{i:"Maklum Balas Stakeholder, Aduan, Cadangan",p:"Analisis sentimen AI, Kategori isu, Penghantaran ke jabatan",o:"Laporan Sentimen, Tindakan Penambahbaikan, Dashboard"}},
+  {no:8,nama:"Pemerkasaan Sistem Tadbir Urus Penjanaan Pendapatan",singkatan:"Revenue Governance",kod:"4B.1.P2",lonjakan:4,ps:8,
+   pemilik:"BKEW, PTPTN",pengguna:"UA, KPT",status:"dirancang",siap:25,
+   fungsi:"Sistem pengurusan dan tadbir urus hasil pendapatan universiti; pemantauan sumber pendapatan pelbagai (yuran, geran, komersial).",
+   teknologi:"ERP Integration, Analytics, Dashboard",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BKEW (KPT)",
+   cadangan:"① Integrasikan Revenue Governance + NFF Cost + ICLR sebagai 'Platform Kewangan Pendidikan Tinggi Bersepadu'. ② Laksanakan analitik ramalan (predictive analytics) untuk jangka pendapatan tahun hadapan. ③ Tambah modul perbandingan benchmark pendapatan antara universiti. ④ Alert automatik bila pendapatan melebihi/kurang dari sasaran KPI.",
+   eaInfo:"Lapisan B: Proses Penjanaan & Tadbir Urus Pendapatan. Lapisan A: Dashboard Kewangan. Lapisan D: Data Pendapatan UA → Gudang Data Raya. Status MyGovEA: Peringkat 2 (Assess).",
+   rptm:"RPTM 4B.1.P2",ipo:{i:"Data Pendapatan UA, Rekod Kutipan Yuran, Geran Kerajaan",p:"Analisis sumber pendapatan, Laporan kewangan, Pemantauan KPI",o:"Laporan Tadbir Urus, Dashboard Pendapatan, Alert Kewangan"}},
+  {no:9,nama:"Sistem Pengiraan Kos Pelajar & Pengagihan NFF",singkatan:"NFF Cost System",kod:"4C.1.P2",lonjakan:4,ps:8,
+   pemilik:"BKEW, MOF",pengguna:"UA, KPT, MOF",status:"belum",siap:0,
+   fungsi:"Sistem pengiraan kos sebenar per-pelajar mengikut program dan institusi; pengagihan Skim Pembiayaan Tertangguh (NFF) berdasarkan kos sebenar.",
+   teknologi:"Analytics, Cost Modelling, Dashboard, API",
+   eaLayers:["A","D"],pelaksanaKPI:"BKEW (KPT), MOF",
+   cadangan:"① Jadikan NFF Cost System sebagai modul dalam platform kewangan bersepadu (bersama Revenue Governance dan ICLR). ② Gunakan Activity-Based Costing (ABC) yang diaudit tahunan untuk ketepatan. ③ Integrasi terus dengan sistem enrolmen (UPUOnline) untuk update data pelajar automatik. ④ Bina model simulasi 'What-If' untuk bantu KPT buat keputusan dasar NFF.",
+   eaInfo:"Lapisan A: Sistem Pengiraan Kos. Lapisan D: Data Kos Program → Gudang Data Raya. Status MyGovEA: Peringkat 1 (Initiate) — BELUM MULA. Ini sistem kritikal untuk reformasi pembiayaan NFF yang perlu dipercepat.",
+   rptm:"RPTM 4C.1.P2",ipo:{i:"Data Enrolmen, Kos Operasi UA, Peruntukan Kerajaan",p:"Pengiraan kos per-pelajar, Pengagihan NFF, Simulasi dasar",o:"Skor NFF, Peruntukan per-UA, Laporan Kos MOF"}},
+  {no:10,nama:"Kutipan Bayaran Balik ICLR (PTPTN)",singkatan:"ICLR/PTPTN",kod:"4D.1.P1",lonjakan:4,ps:8,
+   pemilik:"PTPTN, BKEW",pengguna:"Graduan, Majikan, PTPTN",status:"dirancang",siap:30,
+   fungsi:"Sistem kutipan bayaran balik pinjaman pelajaran PTPTN secara automatik merentasi agensi (IRB, KWSP, majikan) — Income Contingent Loan Repayment.",
+   teknologi:"Cross-Agency API, Analytics, Automation, KWSP/IRB Integration",
+   eaLayers:["B","A","D"],pelaksanaKPI:"PTPTN",
+   cadangan:"① Integrasikan ICLR dengan MyAlumni dan Gudang Data Raya untuk ekosistem graduan lengkap. ② Laksanakan penangguhan automatik untuk graduan yang menganggur (semak data EPF/LHDN). ③ Tambah 'Debt Management Dashboard' untuk PTPTN pantau portfolio pinjaman secara holistic. ④ Bina portal self-service graduan untuk semak baki, sejarah bayaran, dan opsyen penstrukturan semula.",
+   eaInfo:"Lapisan B: Proses Bayaran Balik Pinjaman. Lapisan A: Portal ICLR Self-Service. Lapisan D: Rekod Pinjaman & Bayaran → Gudang Data Raya. Lapisan T: API KWSP, LHDN, Majikan. Status MyGovEA: Peringkat 2 (Assess). Cross-agency API adalah risiko teknikal utama.",
+   rptm:"RPTM 4D.1.P1",ipo:{i:"Rekod Pinjaman, Data Pendapatan Graduan (LHDN/KWSP)",p:"Pengiraan kadar bayaran balik, Pengurusan tunggakan, Alert",o:"Bayaran Automatik, Penyata Akaun, Laporan Portfolio PTPTN"}},
+  {no:11,nama:"Pembangunan Kerangka Kesihatan Mental Pelajar",singkatan:"Mental Health Framework",kod:"1C.2.P1",lonjakan:1,ps:6,
+   pemilik:"BHEP, JPT",pengguna:"Pelajar IPT, Kaunselor",status:"progress",siap:45,
+   fungsi:"Platform digital sokongan kesihatan mental pelajar IPT; penilaian risiko, rujukan kaunselor, sumber kesejahteraan; dashboard institusi.",
+   teknologi:"Web, Mobile, AI Risk Assessment, Telemedicine API",
+   eaLayers:["B","A"],pelaksanaKPI:"BHEP (KPT), JPT",
+   cadangan:"① Integrasikan modul wellbeing terus ke dalam DLE (platform pembelajaran) — pelajar akses sokongan semasa belajar. ② Gunakan AI risk scoring yang selamat dan beretika untuk kenalpasti pelajar berisiko tinggi awal. ③ Pastikan data kesihatan mental DIPISAHKAN dari rekod akademik — perlindungan privasi yang ketat (PDPA). ④ Tambah module 'peer support' untuk pelajar tolong pelajar lain.",
+   eaInfo:"Lapisan B: Proses Sokongan Kesihatan Mental. Lapisan A: Portal Wellbeing Pelajar. Lapisan D: Rekod Kesejahteraan (ANONIMOUS) — TIDAK disimpan dalam Gudang Data Raya am. Lapisan T: Telemedicine API. Status MyGovEA: Peringkat 3 (Define). PENTING: Data sensitivity memerlukan perlindungan khas.",
+   rptm:"RPTM 1C.2.P1",ipo:{i:"Self-Assessment Pelajar, Rekod Rujukan Kaunselor",p:"Penilaian risiko AI, Penjadualan sesi, Pemantauan trend",o:"Sokongan Kaunseling, Laporan Wellbeing, Alert Institusi"}},
+  {no:12,nama:"Malaysia Global Alumni Portal — MyAlumni Global",singkatan:"MyAlumni Global",kod:"7B.1.P2",lonjakan:7,ps:2,
+   pemilik:"BDP, EMGS",pengguna:"Alumni IPT Malaysia (Dalam & Luar Negara)",status:"selesai",siap:100,
+   fungsi:"Portal alumni global untuk semua graduan IPT Malaysia; networking profesional, job matching, tracking kerjaya, sumbangan alumni.",
+   teknologi:"Cloud, Mobile, AI Job Matching, Analytics, API LinkedIn",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BDP (KPT), EMGS",
+   cadangan:"① Jadikan MyAlumni sebagai 'Lifelong Learner Profile' yang terintegrasi dengan eLLP, TCISE, dan ICLR. ② Tambah modul mentorship alumni-pelajar semasa. ③ Bangunkan 'Alumni Impact Dashboard' untuk ukur sumbangan alumni kepada ekonomi negara. ④ Integrasi dengan ICLR/PTPTN untuk kemudahan bayaran balik pinjaman melalui portal yang sama.",
+   eaInfo:"Lapisan B: Proses Alumni Engagement & Tracking Kerjaya. Lapisan A: Portal Web + Mobile. Lapisan D: Profil Graduan → Gudang Data Raya. Status MyGovEA: Peringkat 5 (Monitor) — sudah operasi. Perlu penambahbaikan integrasi.",
+   rptm:"RPTM 7B.1.P2",ipo:{i:"Rekod Graduan, Data Kerjaya, Profil Profesional",p:"Job matching AI, Networking, Pengurusan sumbangan",o:"Direktori Alumni, Laporan Kerjaya Graduan, Data ke Gudang"}},
+  {no:13,nama:"Research Management System",singkatan:"RMS",kod:"6A.5.P1",lonjakan:6,ps:5,
+   pemilik:"BDP, KPT",pengguna:"Penyelidik, UA, KPT",status:"progress",siap:60,
+   fungsi:"Platform pengurusan penyelidikan berpusat — permohonan geran, pengurusan projek, penyerahan laporan, penerbitan hasil penyelidikan.",
+   teknologi:"Cloud, API MyGrants, Analytics, Document Management",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Integrasikan RMS + MyRA + NKI + MyNEX sebagai 'Ekosistem Penyelidikan Bersepadu KPT'. ② Laksanakan auto-submission laporan penyelidikan ke NKI setelah projek selesai. ③ Tambah AI plagiarism & quality checker sebelum penerbitan. ④ Bangunkan modul 'Industry Connect' dalam RMS untuk padankan penyelidik dengan keperluan industri melalui MyNEX.",
+   eaInfo:"Lapisan B: Proses Pengurusan Penyelidikan (Grant-to-Publication). Lapisan A: Portal RMS Web. Lapisan D: Data Geran & Penerbitan → Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define).",
+   rptm:"RPTM 6A.5.P1",ipo:{i:"Permohonan Geran, Profil Penyelidik, Proposal Penyelidikan",p:"Semakan geran, Pengurusan projek, Pemantauan output",o:"Laporan Penyelidikan, Data ke NKI/MyRA, Rekod Patent/IP"}},
+  {no:14,nama:"National Knowledge Infrastructure",singkatan:"NKI",kod:"6A.5.P2",lonjakan:6,ps:5,
+   pemilik:"BKPI, JPT",pengguna:"Penyelidik, Awam, Industri",status:"dirancang",siap:20,
+   fungsi:"Repository pengetahuan nasional — simpan, indeks, dan kongsi output penyelidikan, tesis, artikel ilmiah; akses terbuka (Open Access).",
+   teknologi:"Repository (DSpace/Fedora), OAI-PMH, Search Engine, API",
+   eaLayers:["A","D","T"],pelaksanaKPI:"BKPI (KPT), JPT",
+   cadangan:"① Jadikan NKI sebagai 'Repositori Nasional Tunggal' yang gantikan semua repositori IPT berasingan (UM IR, UTM IR, dll). ② Laksanakan Semantic Search AI untuk carian konten ilmiah yang lebih relevan. ③ Berikan DOI automatik kepada setiap penerbitan Malaysia. ④ Bina API terbuka untuk akses antarabangsa — tingkatkan visibility penyelidikan Malaysia di peringkat global.",
+   eaInfo:"Lapisan A: Platform Repositori Digital. Lapisan D: Tesis, Jurnal, Dataset → Gudang Data Raya. Lapisan T: DSpace/Fedora, OAI-PMH Protocol, Search Engine. Status MyGovEA: Peringkat 2 (Assess). Cadangan: Guna standard Dublin Core + LOM Metadata.",
+   rptm:"RPTM 6A.5.P2",ipo:{i:"Tesis, Jurnal, Artikel, Dataset Penyelidikan",p:"Indexing metadata, Semakan kualiti, Penerbitan OA",o:"Repository Terbuka, API Akses, Statistik Penggunaan"}},
+  {no:15,nama:"Malaysia Research Impact and Assessment",singkatan:"MyRA",kod:"6A.6.P1",lonjakan:6,ps:5,
+   pemilik:"BKPI, JPT",pengguna:"UA, JPT, KPT",status:"progress",siap:55,
+   fungsi:"Sistem penilaian dan pengukuran impak penyelidikan universiti; menentukan status Universiti Penyelidikan (RU) dan Comprehensive University.",
+   teknologi:"Analytics, Dashboard, Automated Data Pull, API Scopus/WoS",
+   eaLayers:["A","D"],pelaksanaKPI:"BKPI (KPT)",
+   cadangan:"① Jadikan MyRA sebagai modul 'Penilaian Penyelidikan' dalam Ekosistem Penyelidikan Bersepadu (RMS+NKI+MyRA+MyNEX). ② Auto-pull data sitasi dari Scopus dan Web of Science tanpa input manual. ③ Tambah 'Research Gap Identifier' AI yang kenalpasti bidang penyelidikan yang kurang diberi tumpuan. ④ Benchmark automatik berbanding universiti tempatan QS ranking untuk motivasi penyelidik.",
+   eaInfo:"Lapisan A: Dashboard Penilaian Penyelidikan. Lapisan D: Metrik Penyelidikan (Sitasi, H-index, Geran). Status MyGovEA: Peringkat 3 (Define). Integrasi dengan API Scopus/Web of Science adalah keperluan teknikal utama.",
+   rptm:"RPTM 6A.6.P1",ipo:{i:"Data Penerbitan, Sitasi, Rekod Geran, Profil Penyelidik",p:"Pengiraan skor impak, Benchmark, Penentuan status RU",o:"Laporan Impak, Status RU/CU, Ranking Penyelidikan"}},
+  {no:16,nama:"Malaysian Nexus of Experts",singkatan:"MyNEX",kod:"6B.2.P1",lonjakan:6,ps:4,
+   pemilik:"BDP, KPT",pengguna:"Industri, Media, Kerajaan, Penyelidik",status:"dirancang",siap:25,
+   fungsi:"Direktori pakar akademik dan penyelidik Malaysia — carian berdasarkan kepakaran, institusi, bidang kajian; menyokong kolaborasi industri-universiti.",
+   teknologi:"Search Engine, API, Analytics, NLP (kepakaran tagging)",
+   eaLayers:["A","D"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Integrasi MyNEX dengan MyMoheS Talent sebagai 'Direktori Pakar' yang bersumber dari profil staf akademik. ② Tambah AI-powered 'Expert Matching' untuk padankan keperluan industri dengan kepakaran akademik. ③ Buka API untuk media dan kerajaan gunakan tanpa log masuk. ④ Tambah metrik 'Research Impact Score' dari MyRA untuk setiap pakar.",
+   eaInfo:"Lapisan A: Direktori Pakar (Search & Discovery). Lapisan D: Profil Pakar (bersumber dari MyMoheS Talent). Status MyGovEA: Peringkat 2 (Assess). Prinsip EA: MyNEX harus MENGGUNAKAN data dari MyMoheS Talent, bukan simpan data berasingan.",
+   rptm:"RPTM 6B.2.P1",ipo:{i:"Profil Staf dari MyMoheS, Kepakaran, Penerbitan",p:"NLP tagging kepakaran, Carian semantik, Padanan industri",o:"Direktori Pakar, API Carian, Laporan Kolaborasi"}},
+  {no:17,nama:"Penaiktarafan Pangkalan Data Bakat (MyMoheS Talent)",singkatan:"MyMoheS Talent",kod:"2B.1.P1",lonjakan:2,ps:7,
+   pemilik:"BPS, KPT",pengguna:"KPT, UA, Politeknik, KK",status:"progress",siap:70,
+   fungsi:"Pangkalan data bakat komprehensif staf akademik dan bukan akademik IPT seluruh Malaysia — profil, kelayakan, pengalaman, CPD records.",
+   teknologi:"Big Data, Analytics, API MyGDX, Dashboard",
+   eaLayers:["A","D"],pelaksanaKPI:"BPS (KPT)",
+   cadangan:"① Jadikan MyMoheS Talent sebagai 'Master Staff Record' untuk semua sistem — MyNEX, LPU Talent Pool, dan RMS rujuk ke sini. ② Tambah modul CPD (Continuing Professional Development) tracking automatik. ③ Integrasikan dengan sistem gaji UA untuk update data kenaikan pangkat secara masa nyata. ④ Bangunkan 'Talent Gap Dashboard' untuk KPT kenal pasti kekurangan kepakaran di IPT.",
+   eaInfo:"Lapisan A: Portal Pengurusan Bakat. Lapisan D: Master Staff Record → Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define). PRINSIP EA KRITIKAL: Ini adalah 'Master Data' untuk semua maklumat staf akademik — sistem lain MESTI rujuk sini, bukan duplikasi.",
+   rptm:"RPTM 2B.1.P1",ipo:{i:"Profil Staf (Biodata, Kelayakan, Pengalaman)",p:"Pengemaskinian profil, Analisis kepakaran, Laporan bakat",o:"Master Staff Record, Laporan Bakat, Data ke MyNEX/LPU"}},
+  {no:18,nama:"Malaysian Environmental & Planetary Health Data Hub",singkatan:"MyEARTH",kod:"9D.2.P1",lonjakan:9,ps:5,
+   pemilik:"JPPKK, BIPD",pengguna:"Penyelidik, Kerajaan, Awam",status:"dirancang",siap:10,
+   fungsi:"Hub data alam sekitar dan kesihatan planet Malaysia — agregat data dari pelbagai agensi alam sekitar untuk penyelidikan dan pembuatan dasar.",
+   teknologi:"Big Data, IoT, Analytics, API, Open Data",
+   eaLayers:["A","D","T"],pelaksanaKPI:"JPPKK, BIPD",
+   cadangan:"① Integrasikan MyEARTH sebagai domain data khusus dalam Gudang Data Raya — bukan gudang data berasingan. ② Bina API terbuka untuk data alam sekitar — kongsi dengan JAS, JUPEM, dan agensi antarabangsa. ③ Tambah visualisasi interaktif (peta GIS) untuk data iklim dan biodiversiti. ④ Integrasi dengan NKI untuk auto-publish data penyelidikan alam sekitar.",
+   eaInfo:"Lapisan A: Hub Data Alam Sekitar (Open Data Platform). Lapisan D: Dataset Iklim, Biodiversiti, IoT Sensor → Gudang Data Raya. Lapisan T: IoT Infrastructure, GIS, Big Data. Status MyGovEA: Peringkat 1 (Initiate). Cross-agency data sharing dengan JAS, JUPEM, MOE.",
+   rptm:"RPTM 9D.2.P1",ipo:{i:"Data Sensor IoT, Data Agensi Alam Sekitar, Penyelidikan",p:"Agregasi data, Analisis trend alam sekitar, Visualisasi",o:"Hub Data Terbuka, Laporan Kesihatan Planet, API Data"}},
+  {no:19,nama:"Gudang Data Raya Bersepadu Pendidikan Tinggi",singkatan:"Gudang Data Raya",kod:"10C.3.P1",lonjakan:10,ps:11,
+   pemilik:"BKPA, KPT",pengguna:"Semua 29 Sistem KPT",status:"progress",siap:40,
+   fungsi:"Data warehouse pusat untuk semua 29 sistem KPT — satu sumber kebenaran (single source of truth) untuk semua data pendidikan tinggi; menyokong analitik dan laporan nasional.",
+   teknologi:"Data Warehouse, Hadoop/Spark, AI/ML, API Gateway, MyGDX Integration",
+   eaLayers:["A","D","T"],pelaksanaKPI:"BKPA (KPT), DTU",
+   cadangan:"① PRIORITI TERTINGGI — Ini adalah FONDASI EA KPT. Semua 28 sistem lain MESTI disambungkan ke Gudang Data Raya sebelum sistem lain boleh berfungsi secara optimal. ② Laksanakan Master Data Management (MDM) dengan golden record untuk entiti utama: Pelajar, Staf, Program, Institusi. ③ Bina Data Quality Dashboard untuk pantau kualiti data dari semua sistem. ④ Laksanakan PDPA-compliant data governance framework.",
+   eaInfo:"Lapisan A: API Gateway + Data Ingestion Pipeline. Lapisan D: Data Warehouse (Single Source of Truth) — MASTER. Lapisan T: Hadoop/Spark/Azure Synapse, API Gateway. Status MyGovEA: Peringkat 3 (Define). INI ADALAH KOMPONEN PALING KRITIKAL dalam keseluruhan arsitektur EA KPT.",
+   rptm:"RPTM 10C.3.P1",ipo:{i:"Data dari Semua 28 Sistem (ETL/API)",p:"Data cleansing, Integration, Master data management",o:"Single Source of Truth, Laporan Analitik Nasional, API Data"}},
+  {no:20,nama:"Modul Analitik Bersepadu IPTA-IPTS (MyMoheS Analytics)",singkatan:"MyMoheS Analytics",kod:"5B.3.P1",lonjakan:5,ps:11,
+   pemilik:"HEAD, KPT",pengguna:"KPT, UA, JPT",status:"progress",siap:65,
+   fungsi:"Platform analitik bersepadu IPTA dan IPTS — laporan pelajar, staf, program, dan prestasi institusi; data untuk pembuatan keputusan.",
+   teknologi:"BI/Analytics, Dashboard, Big Data, API",
+   eaLayers:["A","D"],pelaksanaKPI:"HEAD (KPT)",
+   cadangan:"① GABUNGKAN MyMoheS Analytics + HEAD Dashboard + Governance BI + MyIRIS ke dalam SATU platform pemantauan bersepadu. ② Gunakan satu 'Analytics-as-a-Service' platform (Power BI Embedded atau Tableau) yang boleh dibahagi antara semua pengguna. ③ Definisikan 'Canonical KPI Dictionary' yang standard supaya semua laporan pakai definisi yang sama. ④ Bina role-based access — CEO KPT nampak agregat, Pengarah UA nampak data institusi sendiri.",
+   eaInfo:"Lapisan A: Platform Analitik & Dashboard. Lapisan D: Data Agregat dari Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define). RISIKO TINGGI: 4 sistem analitik berasingan (Analytics + HEAD + Governance BI + MyIRIS) — pembaziran besar. Perlu keputusan penyatuan SEGERA.",
+   rptm:"RPTM 5B.3.P1",ipo:{i:"Data dari Gudang Data Raya, KPI Institusi",p:"Analisis trend, Visualisasi, Laporan automatik",o:"Dashboard Analitik, Laporan IPTA-IPTS, Data Sokongan Dasar"}},
+  {no:21,nama:"Sistem Pemantauan Prestasi Pendidikan Tinggi (HEAD Dashboard)",singkatan:"HEAD Dashboard",kod:"10A.3.P1",lonjakan:10,ps:11,
+   pemilik:"HEAD, KPT",pengguna:"Pengurusan Tertinggi KPT, JPM",status:"progress",siap:55,
+   fungsi:"Dashboard eksekutif untuk pemantauan KPI Pendidikan Tinggi — laporan untuk Kabinet, JPM, dan Pengurusan Tertinggi KPT.",
+   teknologi:"Dashboard, BI, API Data, Real-time Analytics",
+   eaLayers:["A"],pelaksanaKPI:"HEAD (KPT)",
+   cadangan:"① Jadikan HEAD Dashboard sebagai 'Lapisan Eksekutif' di atas platform analitik bersepadu — bukannya sistem berasingan. ② Fokus hanya pada KPI peringkat Kabinet/JPM — bukan data operasi. ③ Laksanakan 'One-Click National Report' untuk Menteri dan Setiausaha Bahagian. ④ Tambah perbandingan prestasi berbanding negara jiran (ASEAN benchmarking).",
+   eaInfo:"Lapisan A: Executive Dashboard (Top-Layer). Sumber Data: Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define). CADANGAN: Gabungkan dengan MyMoheS Analytics — HEAD Dashboard hanyalah 'view peringkat eksekutif' dari platform analitik yang sama.",
+   rptm:"RPTM 10A.3.P1",ipo:{i:"KPI Agregat dari Gudang Data Raya",p:"Visualisasi eksekutif, Penjanaan laporan automatik",o:"Dashboard Kabinet/JPM, Laporan Tahunan KPT, Trend Nasional"}},
+  {no:22,nama:"Malaysia Integrated Rating System",singkatan:"MyIRIS",kod:"7A.1.P1 / 10B.1.P1",lonjakan:7,ps:9,
+   pemilik:"BPS / HEAD (DUPLIKAT)",pengguna:"UA, KPT, Awam",status:"duplikat",siap:0,
+   fungsi:"ATENSI: MyIRIS dibina oleh DUA pasukan berbeza (L7 dan L10) dengan skop yang sama — sistem penarafan bersepadu universiti. Ini adalah isu tadbir urus serius yang perlu diselesaikan SEGERA.",
+   teknologi:"Analytics, Dashboard, API",
+   eaLayers:["B","A","D"],pelaksanaKPI:"BELUM DITENTUKAN — Perlu resolusi segera",
+   cadangan:"⚠ TINDAKAN SEGERA: ① Panggil mesyuarat bersama Pemilik L7 (Datin Noorazah) dan Pemilik L10 (Dr. Farihan Irfan) untuk selesaikan pertindihan. ② Tentukan SATU pasukan pemilik dan SATU belanjawan. ③ Selepas resolusi, integrasikan MyIRIS sebagai modul dalam platform analitik bersepadu (bukan sistem berasingan ke-5). ④ Dokumentasikan scope MyIRIS dengan jelas: penarafan institusi untuk AWAM, bukan pengurusan dalaman.",
+   eaInfo:"STATUS: ⚠ DUPLIKAT KRITIKAL — Dua pembangunan serentak dengan tujuan sama. Ini adalah kegagalan tadbir urus EA. TINDAKAN EA: Laksanakan 'Application Rationalization' — satu sistem sahaja. Selepas resolusi, masukkan sebagai Komponen Penilaian Luaran dalam platform analitik bersepadu.",
+   rptm:"RPTM 7A.1.P1 DAN 10B.1.P1 — SAMA SISTEM",ipo:{i:"Data Institusi, Metrik Penarafan, Input Pihak Ketiga",p:"Pengiraan skor penarafan, Verifikasi data, Pengesahan",o:"Penarafan Universiti, Laporan Awam, Ranking Nasional"}},
+  {no:23,nama:"National Learner Experience Survey",singkatan:"My-NLEES",kod:"1A.4.P1",lonjakan:1,ps:9,
+   pemilik:"BKA, JPT",pengguna:"Pelajar IPT, KPT",status:"progress",siap:50,
+   fungsi:"Survei pengalaman pelajar nasional — mengukur kepuasan pelajar, kualiti pembelajaran, sokongan pelajar, dan pengalaman kampus secara berkala.",
+   teknologi:"Survey Platform, Analytics, AI Sentiment, API",
+   eaLayers:["A","D"],pelaksanaKPI:"BKA (KPT), JPT",
+   cadangan:"① Satukan My-NLEES dengan Inclusive Feedback Platform sebagai 'Platform Survei & Maklum Balas Nasional'. ② Laksanakan survei kohort sepanjang pengajian (Year 1, 2, 3 dan pasca-tamat) untuk trend longitudinal. ③ Benchmark keputusan dengan NSS (UK) dan QILT (Australia). ④ Kongsi data ke DLE untuk penambahbaikan kandungan pengajaran berdasarkan maklum balas pelajar.",
+   eaInfo:"Lapisan A: Platform Survei Digital. Lapisan D: Data Kepuasan Pelajar → Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define). PERTINDIHAN: Fungsi bertindih dengan Inclusive Feedback (5D.2.P1) — perlu penyatuan.",
+   rptm:"RPTM 1A.4.P1",ipo:{i:"Respons Survei Pelajar, Konteks Pengajaran",p:"Analisis kepuasan, Sentimen AI, Benchmark nasional",o:"Laporan Pengalaman Pelajar, NPS Score, Data ke HEAD Dashboard"}},
+  {no:24,nama:"Integrasi Teknologi Disruptif (ITD Platform)",singkatan:"ITD Platform",kod:"3F.1.P1",lonjakan:3,ps:1,
+   pemilik:"BDP, KPT",pengguna:"Pensyarah, Pelajar",status:"progress",siap:55,
+   fungsi:"Platform pembelajaran imersif menggunakan VR/AR/AI — pengalaman pembelajaran hands-on untuk bidang teknikal, perubatan, kejuruteraan.",
+   teknologi:"VR/AR, AI, 3D Simulation, Cloud Computing, Edge Computing",
+   eaLayers:["A","T"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Jadikan ITD sebagai modul 'Immersive Learning' dalam DLE — satu ekosistem pembelajaran digital. ② Mulakan dengan bidang berimpak tinggi: perubatan, kejuruteraan, vokasional — ROI jelas. ③ Bina 'Content Marketplace' di mana IPT boleh kongsi konten VR/AR antara satu sama lain. ④ Pastikan hardware (VR headset) di semua makmal ITD sebelum lancar kepada pelajar.",
+   eaInfo:"Lapisan A: Platform VR/AR Learning. Lapisan T: Edge Computing, VR/AR Infrastructure, 3D Render Farm. Status MyGovEA: Peringkat 3 (Define). CADANGAN: ITD harus jadi modul dalam DLE, bukan sistem berasingan — kurangkan duplikasi data pembelajaran.",
+   rptm:"RPTM 3F.1.P1",ipo:{i:"Kandungan VR/AR, Profil Pelajar, Objektif Pembelajaran",p:"Simulasi imersif, Penilaian interaktif, Progress tracking",o:"Rekod Pencapaian, Sijil Kemahiran (ke TCISE), Data Analitik"}},
+  {no:25,nama:"Digital Learning Ecosystem Integration",singkatan:"DLE",kod:"3B.4.P1",lonjakan:3,ps:1,
+   pemilik:"BKA, JPT",pengguna:"Pelajar, Pensyarah IPT",status:"dirancang",siap:30,
+   fungsi:"Ekosistem pembelajaran digital bersepadu — LMS + AI tutoring + kandungan digital + analitik pembelajaran untuk semua IPT Malaysia.",
+   teknologi:"LMS (Moodle/Canvas), AI Tutoring, Learning Analytics, API xAPI/LTI, Content Repository",
+   eaLayers:["B","A"],pelaksanaKPI:"BKA (KPT), JPT",
+   cadangan:"① DLE harus jadi PLATFORM INDUK yang merangkumi ITD, AI Metadata, Micro-credential, dan eLLP — satu ekosistem pembelajaran KPT. ② Guna standard xAPI (Experience API) untuk record semua aktiviti pembelajaran merentasi sistem. ③ Laksanakan 'AI Adaptive Tutor' yang personalised untuk setiap pelajar. ④ Integrasi dengan TCISE untuk pengeluaran sijil digital automatik selepas tamat kursus.",
+   eaInfo:"Lapisan B: Proses Pengajaran & Pembelajaran Digital. Lapisan A: LMS + AI Tutor (Platform Induk). Lapisan D: Learning Records (xAPI) → Gudang Data Raya. Status MyGovEA: Peringkat 2 (Assess). DLE adalah pusat ekosistem PS1 (Pengajaran & Pembelajaran).",
+   rptm:"RPTM 3B.4.P1",ipo:{i:"Kandungan Kursus, Profil Pelajar, Objektif Kurikulum",p:"Penyampaian kandungan AI, Penilaian adaptif, Analytics",o:"Rekod Pembelajaran (xAPI), Sijil ke TCISE, Data ke Gudang"}},
+  {no:26,nama:"Platform Penyepaduan Micro-credential",singkatan:"Micro-credential",kod:"8A.1.P3",lonjakan:8,ps:1,
+   pemilik:"MQA, BDP",pengguna:"Pelajar, Profesional, Majikan",status:"progress",siap:45,
+   fungsi:"Platform pengurusan dan pengiktirafan micro-credential — pendaftaran kursus, penyampaian kandungan, penilaian, pengeluaran badge digital.",
+   teknologi:"LMS, API, Digital Badge (Open Badges), Analytics, MQA Integration",
+   eaLayers:["B","A","D"],pelaksanaKPI:"MQA, BDP (KPT)",
+   cadangan:"① Jadikan Micro-credential sebagai modul dalam DLE — satu platform pembelajaran bersepadu. ② Semua micro-credential MESTI mendapat akreditasi MQA sebelum ditawarkan. ③ Bina 'Employer Verification Portal' untuk majikan sahkan micro-credential pekerja secara self-service melalui TCISE. ④ Tambah modul 'Credit Transfer' yang automatik kira kredit MC untuk program ijazah penuh.",
+   eaInfo:"Lapisan B: Proses Akreditasi & Pengiktirafan Micro-credential. Lapisan A: Platform MC (Sub-modul DLE). Lapisan D: Rekod MC → Bank Kredit Akademik → TCISE. Status MyGovEA: Peringkat 3 (Define).",
+   rptm:"RPTM 8A.1.P3",ipo:{i:"Kandungan Kursus, Pendaftaran Peserta, Standard MQA",p:"Penyampaian kursus, Penilaian, Akreditasi MQA",o:"Badge Digital, Rekod ke Bank Kredit, Sijil ke TCISE"}},
+  {no:27,nama:"Bank Kredit Akademik",singkatan:"Bank Kredit Akademik",kod:"8A.2.P1",lonjakan:8,ps:1,
+   pemilik:"BDP, KPT",pengguna:"Pelajar, Graduan, IPT",status:"selesai",siap:100,
+   fungsi:"Bank Kredit Akademik Malaysia — simpan semua kredit akademik pelajar dari pelbagai institusi dan mod pembelajaran; pemindahan kredit fleksibel.",
+   teknologi:"Blockchain, Database, API, Digital Badge",
+   eaLayers:["A","D","T"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Integrasikan Bank Kredit dengan TCISE — sijil di TCISE, kredit di Bank Kredit — dua komponen saling melengkapi. ② Laksanakan 'Credit Equivalency Engine' AI yang otomatis kira ekuivalen kredit antara institusi. ③ Tambah modul 'Credit Portfolio' di mana pelajar boleh lihat semua kredit terkumpul dari semua institusi. ④ API terbuka untuk semua IPT Malaysia sambungkan sistem kredit mereka.",
+   eaInfo:"Lapisan A: Portal Bank Kredit (Web + API). Lapisan D: Rekod Kredit Blockchain. Lapisan T: Blockchain (immutable credit record). Status MyGovEA: Peringkat 5 (Monitor) — sudah operasi. Perlu penyepaduan lebih lanjut dengan DLE dan Micro-credential.",
+   rptm:"RPTM 8A.2.P1",ipo:{i:"Rekod Kursus, Kredit dari DLE/MC/IPT, Data Ekuivalen",p:"Pengiraan kredit, Pengesahan blockchain, Transfer kredit",o:"Rekod Kredit Disahkan, Portfolio Kredit Pelajar, API ke IPT"}},
+  {no:28,nama:"Lifelong Learning Portal (eLLP)",singkatan:"eLLP",kod:"8B.3.P1",lonjakan:8,ps:1,
+   pemilik:"BDP, KPT",pengguna:"Profesional, Alumni, Awam",status:"progress",siap:40,
+   fungsi:"Portal Pembelajaran Sepanjang Hayat — akses kepada kursus, micro-credential, CPD, dan program fleksibel untuk semua lapisan masyarakat.",
+   teknologi:"LMS, Portal Web, Mobile, API, Analytics",
+   eaLayers:["B","A"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Satukan eLLP dengan DLE sebagai satu platform pembelajaran — pelajar formal dan PSH guna platform sama, bezanya hak akses dan jenis kredit. ② Fokus eLLP sebagai 'Front Door' untuk masyarakat umum yang ingin belajar dari IPT. ③ Bina modul 'Learning Pathway Recommender' AI yang cadangkan laluan pembelajaran berdasarkan kerjaya semasa. ④ Integrasi dengan HRD Corp untuk pengiktirafan CPD pekerjaan.",
+   eaInfo:"Lapisan B: Proses Pembelajaran Sepanjang Hayat. Lapisan A: Portal PSH (sub-modul DLE). Lapisan D: Rekod PSH → Gudang Data Raya. Status MyGovEA: Peringkat 3 (Define). eLLP dan DLE perlu penyatuan — elak dua portal pembelajaran yang serupa.",
+   rptm:"RPTM 8B.3.P1",ipo:{i:"Pendaftaran Peserta, Kandungan Kursus PSH",p:"Penyampaian kursus, Penilaian, CPD tracking",o:"Sijil PSH, Rekod ke Bank Kredit, Data ke Gudang"}},
+  {no:29,nama:"Metadata dan Penandaan PSH (AI Metadata & Tagging)",singkatan:"AI Metadata & Tagging",kod:"8B.4.P1",lonjakan:8,ps:1,
+   pemilik:"BDP, KPT",pengguna:"Sistem Lain (DLE, eLLP, NKI)",status:"progress",siap:50,
+   fungsi:"Enjin AI untuk tag dan metadata kandungan pembelajaran secara automatik — memudahkan carian, cadangan, dan pengurusan kandungan merentasi semua platform.",
+   teknologi:"AI/NLP, Machine Learning, Taxonomy, API",
+   eaLayers:["A","T"],pelaksanaKPI:"BDP (KPT)",
+   cadangan:"① Jadikan AI Metadata sebagai PERKHIDMATAN BERSAMA (Shared Service) untuk DLE, eLLP, NKI, dan Micro-credential — bukan sistem berasingan. ② Gunakan standard taksonomi kemahiran ESCO (EU) atau O*NET (US) yang diadaptasi untuk konteks Malaysia. ③ Bina 'Skills Ontology Malaysia' yang komprehensif bagi keperluan pasaran kerja tempatan. ④ Tambah keupayaan multi-language tagging (BM, BI, Mandarin, Tamil).",
+   eaInfo:"Lapisan A: AI Tagging Engine (Shared Microservice). Lapisan T: NLP/ML Infrastructure, Taxonomy Management. Status MyGovEA: Peringkat 3 (Define). PRINSIP EA: Ini harus dibina sebagai microservice yang dikongsi, bukan sistem monolitik berasingan.",
+   rptm:"RPTM 8B.4.P1",ipo:{i:"Kandungan Pembelajaran (DLE/eLLP/NKI)",p:"AI auto-tagging, Taxonomy mapping, Carian semantik",o:"Metadata Tag, Sistem Cadangan Kandungan, API Carian"}}
+];
+
+// ── RENDER FUNCTIONS ─────────────────────────────────
+
+function statusClass(s){ return s==="selesai"?"status-selesai":s==="progress"?"status-progress":s==="dirancang"?"status-dirancang":s==="belum"?"status-belum":"status-duplikat"; }
+function statusLabel(s){ return s==="selesai"?"✅ Selesai":s==="progress"?"🔄 In Progress":s==="dirancang"?"📋 Dirancang":s==="belum"?"⏸ Belum Mula":"🚨 DUPLIKAT"; }
+function progressColor(p){ return p===100?"#1a7a4a":p>=60?"#d35400":p>=30?"#856404":"#c0392b"; }
+function getStatus2026(s){
+  if(s.status==="selesai") return '<span style="color:#1a7a4a;font-weight:700">✅ Selesai (100%)</span>';
+  if(s.status==="duplikat") return '<span style="color:#c0392b;font-weight:700">🚨 Duplikat ('+s.siap+'%)</span>';
+  if(s.status==="belum") return '<span style="color:#856404;font-weight:700">⏸ Belum Mula ('+s.siap+'%)</span>';
+  if(s.status==="dirancang") return '<span style="color:#0057b7;font-weight:700">📋 Dirancang ('+s.siap+'%)</span>';
+  if(s.siap>=70) return `<span style="color:#d35400;font-weight:700">🔄 In Progress (${s.siap}%)</span>`;
+  if(s.siap>=40) return `<span style="color:#856404;font-weight:700">🔄 In Progress (${s.siap}%)</span>`;
+  return `<span style="color:#c0392b;font-weight:700">🔄 In Progress (${s.siap}%)</span>`;
+}
+
+function openBadgeModal(type){
+  if(type==='sistem'){
+    openModal('📱 Senarai 29 Sistem Digital KPT — RPTM 2026-2035',
+      `<table style="width:100%;border-collapse:collapse;font-size:.8rem">
+      <thead><tr style="background:#003087;color:#fff">
+        <th style="padding:6px 10px">No.</th>
+        <th style="padding:6px 10px">Singkatan</th>
+        <th style="padding:6px 10px">Nama Penuh Sistem</th>
+        <th style="padding:6px 10px">Pemilik Projek</th>
+        <th style="padding:6px 10px">L</th>
+        <th style="padding:6px 10px">PS</th>
+        <th style="padding:6px 10px">Status 2026</th>
+      </tr></thead>
+      <tbody>${systems.map((s,i)=>`<tr style="background:${i%2?'#f8f9fe':'#fff'};border-bottom:1px solid #edf0f7">
+        <td style="padding:5px 10px;color:#6b7a99">${s.no}</td>
+        <td style="padding:5px 10px;font-weight:700;color:#003087">${s.singkatan}</td>
+        <td style="padding:5px 10px">${s.nama}</td>
+        <td style="padding:5px 10px;color:#374151">${s.pemilik}</td>
+        <td style="padding:5px 10px"><span class="badge badge-lonjakan">L${s.lonjakan}</span></td>
+        <td style="padding:5px 10px">PS${s.ps}</td>
+        <td style="padding:5px 10px;white-space:nowrap">${getStatus2026(s)}</td>
+      </tr>`).join('')}</tbody></table>`);
+  } else if(type==='lonjakan'){
+    openModal('🎯 10 Lonjakan RPTM 2026-2035 & Pemilik Lonjakan',
+      Object.entries(lonjakanOwners).map(([k,v])=>{
+        const sys=systems.filter(s=>s.lonjakan==k);
+        return `<div style="margin-bottom:12px;padding:10px 14px;background:#f0f4ff;border-left:4px solid #003087;border-radius:8px">
+          <strong style="color:#003087">Lonjakan ${k}</strong>
+          <div style="margin:3px 0;font-size:.85rem"><strong>Pemilik:</strong> ${v.nama}</div>
+          <div style="font-size:.8rem;color:#6b7a99"><strong>Jawatan:</strong> ${v.jawatan}</div>
+          <div style="font-size:.78rem;margin-top:4px"><strong>Sistem (${sys.length}):</strong> ${sys.map(s=>`<span style="background:#003087;color:#fff;border-radius:10px;padding:1px 7px;margin:2px;display:inline-block;font-size:.7rem">${s.singkatan}</span>`).join('')}</div>
+        </div>`;}).join(''));
+  } else {
+    openModal('🏛 11 Perkhidmatan Sepunya KPT',
+      Object.entries(psNames).map(([k,v])=>{
+        const sys=systems.filter(s=>s.ps==k);
+        const isGap=sys.length===0;
+        return `<div style="margin-bottom:10px;padding:10px 14px;background:${isGap?'#fff0f0':'#e8f5e9'};border-left:4px solid ${isGap?'#c0392b':'#1a7a4a'};border-radius:8px">
+          <strong style="color:${isGap?'#c0392b':'#1a7a4a'}">${v}</strong>
+          ${isGap?'<div style="color:#c0392b;font-size:.8rem;margin-top:4px">⚠ TIADA SISTEM — Jurang Portfolio</div>'
+            :`<div style="font-size:.78rem;margin-top:4px">${sys.map(s=>`<span style="background:#1a7a4a;color:#fff;border-radius:10px;padding:1px 7px;margin:2px;display:inline-block;font-size:.7rem">${s.singkatan}</span>`).join('')}</div>`}
+        </div>`;}).join(''));
+  }
+}
+
+function eaBadges(layers){
+  return layers.map(l=>`<span class="badge badge-${l.toLowerCase()}">${l}</span>`).join(" ");
+}
+
+function buildCard(sys,view){
+  const uid=`sys_${sys.no}_${view||''}`;
+  return `
+<div class="sys-card" data-lonjakan="${sys.lonjakan}" data-ps="${sys.ps}" data-status="${sys.status}" data-search="${sys.nama.toLowerCase()} ${sys.singkatan.toLowerCase()} ${sys.pemilik.toLowerCase()} ${sys.kod.toLowerCase()}">
+  <div class="sys-card-header" onclick="toggleCard('${uid}')">
+    <div class="sys-name-block">
+      <div class="sys-singkatan">${sys.singkatan}</div>
+      <div class="sys-nama">${sys.nama}</div>
+      <div class="sys-kod">Kod: ${sys.kod}</div>
+      <div class="sys-badges">
+        <span class="badge badge-lonjakan">L${sys.lonjakan}</span>
+        ${eaBadges(sys.eaLayers)}
+        <span class="badge badge-ps">PS${sys.ps}</span>
+        <span class="status-badge ${statusClass(sys.status)}">${statusLabel(sys.status)}</span>
+      </div>
+    </div>
+    <span style="color:var(--muted);font-size:1.1rem">▼</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" style="width:${sys.siap}%;background:${progressColor(sys.siap)}"></div></div>
+    <span class="progress-pct">${sys.siap}%</span>
+  </div>
+  <div class="sys-detail" id="${uid}">
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="dl">Pemilik Lonjakan</div>
+        <div class="dv"><strong>${lonjakanOwners[sys.lonjakan].nama}</strong><br><small style="color:var(--muted)">${lonjakanOwners[sys.lonjakan].jawatan}</small></div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">Pemilik Projek / Agensi</div>
+        <div class="dv">${sys.pemilik}</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">Pelaksana KPI (TANGGUNGJAWAB)</div>
+        <div class="dv">${sys.pelaksanaKPI}</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">Perkhidmatan Sepunya</div>
+        <div class="dv">${psNames[sys.ps]}</div>
+      </div>
+      <div class="detail-item detail-full">
+        <div class="dl">Fungsi Utama</div>
+        <div class="dv">${sys.fungsi}</div>
+      </div>
+      <div class="detail-item detail-full">
+        <div class="dl">Teknologi Utama</div>
+        <div class="dv">${sys.teknologi}</div>
+      </div>
+      <div class="detail-item detail-full">
+        <div class="dl">Proses IPO (Input → Proses → Output)</div>
+        <div class="dv">
+          <div class="ipo-mini">
+            <div class="ipo-step ipo-i"><div class="ipo-label">📥 Input</div>${sys.ipo.i}</div>
+            <div class="ipo-step ipo-p"><div class="ipo-label">⚙ Proses</div>${sys.ipo.p}</div>
+            <div class="ipo-step ipo-o"><div class="ipo-label">📤 Output</div>${sys.ipo.o}</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-item detail-full">
+        <div class="dl">💡 Cadangan Proses Perniagaan (Analisis EA) <span style="font-size:.65rem;color:var(--kpt-gold)">[👆 klik untuk baca penuh]</span></div>
+        <div class="cadangan-box" onclick="openCadanganModal('${sys.singkatan.replace(/'/g,"\\'")}','${sys.cadangan.replace(/'/g,"\\'").replace(/\n/g,' ')}')">
+          <div class="lbl-claude">✨ Cadangan Daripada Analisis EA</div>
+          ${sys.cadangan.length>220?sys.cadangan.substring(0,220)+'…':sys.cadangan}
+        </div>
+      </div>
+      <div class="detail-item detail-full">
+        <div class="dl">🏛 Maklumat Seni Bina Perusahaan (EA) <span style="font-size:.65rem;color:var(--kpt-blue)">[👆 klik untuk baca penuh]</span></div>
+        <div class="ea-box" onclick="openEAModal('${sys.singkatan.replace(/'/g,"\\'")}','${sys.eaInfo.replace(/'/g,"\\'").replace(/\n/g,' ')}')">
+          ${sys.eaInfo.length>220?sys.eaInfo.substring(0,220)+'…':sys.eaInfo}
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">Rujukan RPTM</div>
+        <div class="dv">${sys.rptm}</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">Lapisan EA</div>
+        <div class="dv">${eaBadges(sys.eaLayers)}</div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── INIT ──────────────────────────────────────────────
+
+function initSystems(){
+  // By Lonjakan
+  for(let i=1;i<=10;i++){
+    const grid = document.getElementById(`grid-L${i}`);
+    if(!grid) continue;
+    const filtered = systems.filter(s=>s.lonjakan===i);
+    grid.innerHTML = filtered.map(s=>buildCard(s,'L')).join('');
+  }
+
+  // By PS (section headers + grids)
+  const psCont = document.getElementById('ps-sections-container');
+  let psHTML='';
+  for(let ps=1;ps<=11;ps++){
+    const sysInPS = systems.filter(s=>s.ps===ps);
+    const isGap = sysInPS.length===0;
+    const sectionClass = isGap?"gap":ps<=6?"ps-cluster":"ps-cluster";
+    const count = sysInPS.length;
+    psHTML += `
+<div class="section-header ${sectionClass}" onclick="toggleSection('PS${ps}')">
+  <div>
+    <div class="section-title">${psNames[ps]} ${isGap?"⚠ GAP":""}</div>
+    <div class="section-sub">${count} Sistem ${isGap?"— Tiada sistem dalam portfolio RPTM":"| Klik untuk kembangkan"}</div>
+  </div>
+  <span class="section-arrow" id="arrow-PS${ps}">▼</span>
+</div>
+<div class="systems-container" id="PS${ps}">
+  ${isGap?`<div class="gap-notice">⚠ Jurang Portfolio: Tiada sistem digital dirancang untuk ${psNames[ps]}. Perlu ditangani dalam semakan RPTM seterusnya.</div>`:`<div class="systems-grid">${sysInPS.map(s=>buildCard(s,'PS')).join('')}</div>`}
+</div>`;
+  }
+  psCont.innerHTML = psHTML;
+
+  // Main table
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = systems.map(s=>`
+<tr>
+  <td>${s.no}</td>
+  <td><div class="td-nama">${s.singkatan}</div><div class="td-kod">${s.nama}</div></td>
+  <td>${s.kod}</td>
+  <td><span class="badge badge-lonjakan">L${s.lonjakan}</span></td>
+  <td style="font-size:.76rem">${lonjakanOwners[s.lonjakan].nama}<br><span style="color:var(--muted)">${lonjakanOwners[s.lonjakan].jawatan}</span></td>
+  <td>${s.pemilik}</td>
+  <td>${s.pelaksanaKPI}</td>
+  <td>${psNames[s.ps]}</td>
+  <td style="white-space:nowrap;font-size:.75rem">${getStatus2026(s)}</td>
+  <td style="max-width:220px">
+    <div style="max-height:72px;overflow:hidden;font-size:.74rem;color:#5a3e00;line-height:1.4">${s.cadangan.substring(0,150)}…</div>
+    <button onclick="openCadanganModal('${s.singkatan.replace(/'/g,"\\'")}','${s.cadangan.replace(/'/g,"\\'").replace(/\n/g,' ')}')" style="margin-top:4px;background:#fff8e6;border:1px solid #c8a400;color:#6b4700;border-radius:6px;padding:2px 8px;font-size:.68rem;cursor:pointer;width:100%">👆 Baca Penuh</button>
+  </td>
+  <td style="max-width:220px">
+    <div style="max-height:72px;overflow:hidden;font-size:.74rem;color:#003087;line-height:1.4">${s.eaInfo.substring(0,150)}…</div>
+    <button onclick="openEAModal('${s.singkatan.replace(/'/g,"\\'")}','${s.eaInfo.replace(/'/g,"\\'").replace(/\n/g,' ')}')" style="margin-top:4px;background:#e6f0ff;border:1px solid #003087;color:#003087;border-radius:6px;padding:2px 8px;font-size:.68rem;cursor:pointer;width:100%">👆 Baca Penuh</button>
+  </td>
+</tr>`).join('');
+}
+
+// ── MODAL ────────────────────────────────────────────
+function openModal(title, bodyHtml){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e || e.target===document.getElementById('modalOverlay'))
+    document.getElementById('modalOverlay').classList.remove('open');
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.getElementById('modalOverlay').classList.remove('open'); });
+
+function openFrameworkModal(type){
+  if(type==='mygovea'){
+    openModal('🏛 MyGovEA Framework',`
+      <h4>Apakah MyGovEA?</h4>
+      <p>MyGovEA (Malaysia Government Enterprise Architecture) ialah rangka kerja EA nasional Malaysia yang dibangunkan oleh Jabatan Digital Negara (JDN). Ia berasaskan standard TOGAF dan ArchiMate dan disesuaikan untuk konteks agensi Kerajaan Malaysia.</p>
+      <h4>5 Peringkat Metodologi MyGovEA</h4>
+      <ul>
+        <li><strong>Peringkat 1 — Mulakan (Initiate):</strong> Tetapkan skop, visi, dan pengurusan EA</li>
+        <li><strong>Peringkat 2 — Nilai (Assess):</strong> Dokumentasi seni bina semasa (AS-IS)</li>
+        <li><strong>Peringkat 3 — Takrifkan (Define):</strong> Bina seni bina sasaran (TO-BE)</li>
+        <li><strong>Peringkat 4 — Bina/Operasi (Build):</strong> Laksana pelan migrasi</li>
+        <li><strong>Peringkat 5 — Pantau (Monitor):</strong> Audit dan penambahbaikan berterusan</li>
+      </ul>
+      <h4>17 Viewpoint MyGovEA</h4>
+      <p>Merangkumi lapisan Perniagaan, Aplikasi, Data, dan Teknologi — masing-masing dengan viewpoint khusus untuk dokumentasi seni bina yang komprehensif.</p>
+      <h4>Relevans kepada KPT</h4>
+      <p>KPT menggunakan MyGovEA untuk memetakan 29 sistem digital RPTM 2026-2035 ke dalam 11 Perkhidmatan Sepunya bagi memastikan integrasi dan kebolehoperasian yang optimum.</p>`);
+  } else {
+    openModal('📊 TOGAF / ArchiMate',`
+      <h4>Apakah TOGAF?</h4>
+      <p>TOGAF (The Open Group Architecture Framework) ialah rangka kerja EA yang paling meluas digunakan di dunia. Ia menyediakan pendekatan berstruktur untuk mereka bentuk, merancang, melaksana, dan mengurus seni bina perusahaan.</p>
+      <h4>ADM — Architecture Development Method</h4>
+      <p>Kaedah utama TOGAF adalah ADM yang merangkumi fasa Preliminary, A hingga H dalam kitaran berulang untuk pembangunan dan pengurusan EA.</p>
+      <h4>Apakah ArchiMate?</h4>
+      <p>ArchiMate ialah bahasa pemodelan visual untuk EA. Ia menyediakan notasi standard untuk menggambarkan dan menganalisis seni bina dari perspektif Perniagaan, Aplikasi, dan Teknologi.</p>
+      <h4>Hubungan dengan MyGovEA</h4>
+      <p>MyGovEA mengadaptasi prinsip TOGAF dan notasi ArchiMate untuk disesuaikan dengan keperluan agensi kerajaan Malaysia, termasuk pematuhan kepada Dasar ICT Kerajaan dan piawaian MyGDX.</p>`);
+  }
+}
+
+function openCadanganModal(title, text){
+  openModal('💡 Cadangan Proses Perniagaan — '+title,
+    `<div style="background:#fff8e6;border-left:4px solid #c8a400;padding:12px 16px;border-radius:8px;font-size:.88rem;line-height:1.8;color:#5a3e00">${text.replace(/①/g,'<br>①').replace(/②/g,'<br>②').replace(/③/g,'<br>③').replace(/④/g,'<br>④').replace(/⚠/g,'<br>⚠')}</div>`);
+}
+
+function openEAModal(title, text){
+  openModal('🏛 Maklumat EA — '+title,
+    `<div style="background:#e6f0ff;border-left:4px solid #003087;padding:12px 16px;border-radius:8px;font-size:.88rem;line-height:1.8;color:#003087">${text.replace(/Lapisan/g,'<br><strong>Lapisan').replace(/Status/g,'<br><strong>Status').replace(/PRINSIP/g,'<br><strong>PRINSIP').replace(/RISIKO/g,'<br><strong>RISIKO').replace(/CADANGAN/g,'<br><strong>CADANGAN').replace(/:/g,':</strong>').replace(/<strong>.*?<\/strong>/g, m => m)}</div>`);
+}
+
+// ── STAT MODAL ───────────────────────────────────────
+function openStatModal(statusFilter){
+  const labels={'selesai':'✅ Selesai','progress':'🔄 Dalam Pelaksanaan','dirancang':'📋 Dirancang','belum':'⏸ Belum Mula','duplikat':'🚨 Kritikal/Duplikat'};
+  const filtered=systems.filter(s=>s.status===statusFilter);
+  const rows=filtered.map((s,i)=>`<tr style="background:${i%2?'#f8f9fe':'#fff'};border-bottom:1px solid #edf0f7">
+    <td style="padding:6px 10px;font-weight:700;color:#003087">${s.singkatan}</td>
+    <td style="padding:6px 10px">${s.nama}</td>
+    <td style="padding:6px 10px;color:#374151">${s.pemilik}</td>
+    <td style="padding:6px 10px"><span class="badge badge-lonjakan">L${s.lonjakan}</span></td>
+    <td style="padding:6px 10px">${getStatus2026(s)}</td>
+  </tr>`).join('');
+  openModal(labels[statusFilter]||'Senarai Sistem',
+    `<table style="width:100%;border-collapse:collapse;font-size:.82rem">
+    <thead><tr style="background:#003087;color:#fff">
+      <th style="padding:6px 10px">Singkatan</th>
+      <th style="padding:6px 10px">Nama Sistem</th>
+      <th style="padding:6px 10px">Pemilik Projek</th>
+      <th style="padding:6px 10px">Lonjakan</th>
+      <th style="padding:6px 10px">Status 2026</th>
+    </tr></thead><tbody>${rows}</tbody></table>`);
+}
+
+// ── TOGGLE ───────────────────────────────────────────
+function toggleSection(id){
+  const cont = document.getElementById(id);
+  const arrow = document.getElementById(`arrow-${id}`);
+  if(!cont) return;
+  const isOpen = cont.classList.contains('open');
+  cont.classList.toggle('open');
+  if(arrow) arrow.classList.toggle('open');
+}
+
+function toggleCard(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('open');
+}
+
+// ── TABS ─────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='interop'){ setTimeout(()=>{initInteropGraph();buildExplanationSection();},100); }
+}
+
+// ── FILTER ───────────────────────────────────────────
+function filterSystems(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const st = document.getElementById('filterStatus').value;
+  const ln = document.getElementById('filterLonjakan').value;
+  const ps = document.getElementById('filterPS').value;
+  document.querySelectorAll('.sys-card').forEach(card=>{
+    const matchQ = !q || card.dataset.search.includes(q);
+    const matchSt = !st || card.dataset.status===st;
+    const matchLn = !ln || card.dataset.lonjakan===ln;
+    const matchPs = !ps || card.dataset.ps===ps;
+    card.classList.toggle('hidden', !(matchQ&&matchSt&&matchLn&&matchPs));
+  });
+  document.querySelectorAll('#mainTable tbody tr').forEach(row=>{
+    const txt = row.textContent.toLowerCase();
+    row.style.display = txt.includes(q) ? '' : 'none';
+  });
+}
+
+function resetFilter(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('filterStatus').value='';
+  document.getElementById('filterLonjakan').value='';
+  document.getElementById('filterPS').value='';
+  filterSystems();
+}
+
+// ══════════════════════════════════════════════════════
+// INTEROPERABILITY GRAPH
+// ══════════════════════════════════════════════════════
+const iNodes = [
+  // id, label, x, y, ps, color, desc
+  {id:"GDR",  label:"Gudang\nData Raya", x:590,y:390, ps:11, color:"#fbbf24", r:34, desc:"PS11 — Backbone data pusat untuk semua 29 sistem. PRIORITI TERTINGGI."},
+  // PS2 — Pelajar (top-left)
+  {id:"UPU",  label:"UPUOnline",    x:130,y:110, ps:2,  color:"#8b5cf6", r:20, desc:"PS2 — Portal kemasukan pelajar domestik. Kod: 10D.3.P1, L10."},
+  {id:"MyCAS",label:"MyCAS",        x:80, y:220, ps:2,  color:"#8b5cf6", r:18, desc:"PS2 — Kemasukan pelajar antarabangsa. Kod: 7D.3.P1, L7."},
+  {id:"E2E",  label:"E2E Visa",     x:200,y:290, ps:2,  color:"#8b5cf6", r:16, desc:"PS2 — Visa digital pelajar antarabangsa. Kod: 7D.3.P2, L7."},
+  {id:"ALM",  label:"MyAlumni",     x:100,y:370, ps:2,  color:"#8b5cf6", r:18, desc:"PS2 — Portal alumni global. Kod: 7B.1.P2, L7. SELESAI."},
+  // PS6 — Kesihatan
+  {id:"MHF",  label:"Mental\nHealth",x:260,y:170, ps:6,  color:"#ec4899", r:17, desc:"PS6 — Kerangka kesihatan mental pelajar. Kod: 1C.2.P1, L1."},
+  // PS9 — QA (center-left)
+  {id:"NLE",  label:"My-NLEES",     x:330,y:220, ps:9,  color:"#f97316", r:17, desc:"PS9 — Survei pengalaman pelajar nasional. Kod: 1A.4.P1, L1."},
+  {id:"GBI",  label:"Governance\nBI",x:380,y:320, ps:9,  color:"#f97316", r:17, desc:"PS9 — Platform BI tadbir urus. Kod: 5C.2.P1, L5. ⚠ BERTINDIH."},
+  {id:"INF",  label:"Inclusive\nFeedback",x:300,y:390,ps:9, color:"#f97316", r:15, desc:"PS9 — Platform maklum balas inklusif. Kod: 5D.2.P1, L5."},
+  {id:"IRS",  label:"MyIRIS",       x:440,y:250, ps:9,  color:"#ef4444", r:19, desc:"PS9 — Sistem penarafan universiti. Kod: 7A.1.P1/10B.1.P1. 🚨 DUPLIKAT!"},
+  // PS11 — Admin (center)
+  {id:"ANA",  label:"MyMoheS\nAnalytics",x:500,y:270,ps:11,color:"#06b6d4",r:19,desc:"PS11 — Analitik bersepadu IPTA-IPTS. Kod: 5B.3.P1, L5. ⚠ BERTINDIH."},
+  {id:"HDD",  label:"HEAD\nDashboard",x:680,y:260,ps:11,color:"#06b6d4",r:19,desc:"PS11 — Dashboard eksekutif KPT. Kod: 10A.3.P1, L10. ⚠ BERTINDIH."},
+  // PS7 — HR (left-middle-low)
+  {id:"MMT",  label:"MyMoheS\nTalent",  x:190,y:510, ps:7,  color:"#10b981", r:20, desc:"PS7 — Pangkalan data bakat staf IPT. Kod: 2B.1.P1, L2."},
+  {id:"LPU",  label:"LPU\nTalent",      x:130,y:450, ps:7,  color:"#10b981", r:16, desc:"PS7 — Talent pool Lembaga Pengarah UA. Kod: 5B.1.P1, L5. SELESAI."},
+  // PS8 — Finance (bottom-center-left)
+  {id:"REV",  label:"Revenue\nGov",     x:380,y:620, ps:8,  color:"#ef4444", r:17, desc:"PS8 — Tadbir urus penjanaan pendapatan. Kod: 4B.1.P2, L4."},
+  {id:"NFF",  label:"NFF Cost",         x:280,y:650, ps:8,  color:"#ef4444", r:16, desc:"PS8 — Pengiraan kos pelajar & NFF. Kod: 4C.1.P2, L4. BELUM MULA."},
+  {id:"ICL",  label:"ICLR\nPTPTN",      x:490,y:640, ps:8,  color:"#ef4444", r:17, desc:"PS8 — Kutipan bayaran balik PTPTN. Kod: 4D.1.P1, L4."},
+  // PS1 — P&P (top-right)
+  {id:"DLE",  label:"DLE",             x:870,y:130, ps:1,  color:"#3b82f6", r:22, desc:"PS1 — Digital Learning Ecosystem (Platform Induk). Kod: 3B.4.P1, L3."},
+  {id:"ITD",  label:"ITD\nPlatform",   x:990,y:200, ps:1,  color:"#3b82f6", r:16, desc:"PS1 — Platform VR/AR imersif. Kod: 3F.1.P1, L3."},
+  {id:"TCI",  label:"TCISE",           x:760,y:210, ps:1,  color:"#3b82f6", r:20, desc:"PS1 — Kelayakan blockchain. Kod: 3F.2.P1, L3. Shared Service."},
+  {id:"MCR",  label:"Micro\nCredential",x:1010,y:320,ps:1,  color:"#3b82f6", r:17, desc:"PS1 — Platform micro-credential. Kod: 8A.1.P3, L8."},
+  {id:"BKA",  label:"Bank\nKredit",    x:940,y:410, ps:1,  color:"#3b82f6", r:17, desc:"PS1 — Bank Kredit Akademik. Kod: 8A.2.P1, L8. SELESAI."},
+  {id:"ELP",  label:"eLLP",            x:840,y:460, ps:1,  color:"#3b82f6", r:16, desc:"PS1 — Lifelong Learning Portal. Kod: 8B.3.P1, L8."},
+  {id:"AIM",  label:"AI Metadata\n&Tagging",x:1050,y:160,ps:1,color:"#3b82f6",r:15,desc:"PS1 — AI tagging enjin shared service. Kod: 8B.4.P1, L8."},
+  // PS4/5 — Research (right)
+  {id:"RMS",  label:"RMS",            x:1060,y:460, ps:5,  color:"#f59e0b", r:19, desc:"PS5 — Research Management System. Kod: 6A.5.P1, L6."},
+  {id:"NKI",  label:"NKI",            x:1110,y:560, ps:5,  color:"#f59e0b", r:18, desc:"PS5 — National Knowledge Infrastructure. Kod: 6A.5.P2, L6."},
+  {id:"MRA",  label:"MyRA",           x:1060,y:640, ps:5,  color:"#f59e0b", r:17, desc:"PS5 — Malaysia Research Impact & Assessment. Kod: 6A.6.P1, L6."},
+  {id:"NEX",  label:"MyNEX",          x:950,y:560, ps:4,  color:"#f59e0b", r:17, desc:"PS4 — Direktori pakar akademik. Kod: 6B.2.P1, L6."},
+  {id:"ETH",  label:"MyEARTH",        x:1130,y:350, ps:5,  color:"#f59e0b", r:16, desc:"PS5 — Environmental Data Hub. Kod: 9D.2.P1, L9."},
+];
+
+// Edge helper: get system info for a node id
+function getSysInfo(id){
+  const map={GDR:{n:"Gudang Data Raya",o:"BKPA, KPT",p:"BKPA, DTU",yr:"2026",st:"In Progress 40%"},
+    UPU:{n:"UPUOnline",o:"BKPA, JPT",p:"BKPA, JPT",yr:"2026",st:"In Progress 65%"},
+    MyCAS:{n:"MyCAS",o:"EMGS+BPPT",p:"EMGS, BPPT",yr:"2026",st:"In Progress 40%"},
+    E2E:{n:"E2E Visa Digital",o:"EMGS, JPT",p:"EMGS, JIM",yr:"2026",st:"Dirancang 15%"},
+    ALM:{n:"MyAlumni Global",o:"BDP, EMGS",p:"BDP, EMGS",yr:"Selesai",st:"✅ Operasi"},
+    MHF:{n:"Mental Health Framework",o:"BHEP, JPT",p:"BHEP",yr:"2026",st:"In Progress 45%"},
+    NLE:{n:"My-NLEES",o:"BKA, JPT",p:"BKA",yr:"2026",st:"In Progress 50%"},
+    GBI:{n:"Governance BI",o:"BGA, KPT",p:"BGA, HEAD",yr:"2026",st:"Dirancang 20%"},
+    INF:{n:"Inclusive Feedback",o:"BGA, KPT",p:"BGA",yr:"2026",st:"Dirancang 10%"},
+    IRS:{n:"MyIRIS",o:"BPS/HEAD (⚠DUPLIKAT)",p:"Belum Ditentukan",yr:"N/A",st:"🚨 KRITIKAL"},
+    ANA:{n:"MyMoheS Analytics",o:"HEAD, KPT",p:"HEAD",yr:"2026",st:"In Progress 65%"},
+    HDD:{n:"HEAD Dashboard",o:"HEAD, KPT",p:"HEAD",yr:"2026",st:"In Progress 55%"},
+    MMT:{n:"MyMoheS Talent",o:"BPS, KPT",p:"BPS",yr:"2026",st:"In Progress 70%"},
+    LPU:{n:"LPU Talent Pool",o:"BGA, KPT",p:"BGA",yr:"Selesai",st:"✅ Operasi"},
+    REV:{n:"Revenue Governance",o:"BKEW, PTPTN",p:"BKEW",yr:"2026",st:"Dirancang 25%"},
+    NFF:{n:"NFF Cost System",o:"BKEW, MOF",p:"BKEW, MOF",yr:"2026",st:"⏸ Belum Mula"},
+    ICL:{n:"ICLR/PTPTN",o:"PTPTN, BKEW",p:"PTPTN",yr:"2026",st:"Dirancang 30%"},
+    DLE:{n:"DLE",o:"BKA, JPT",p:"BKA",yr:"2026",st:"Dirancang 30%"},
+    ITD:{n:"ITD Platform",o:"BDP, KPT",p:"BDP",yr:"2026",st:"In Progress 55%"},
+    TCI:{n:"TCISE",o:"BPS, KPT",p:"BPS",yr:"2026",st:"In Progress 50%"},
+    MCR:{n:"Micro-credential",o:"MQA, BDP",p:"MQA, BDP",yr:"2026",st:"In Progress 45%"},
+    BKA:{n:"Bank Kredit Akademik",o:"BDP, KPT",p:"BDP",yr:"Selesai",st:"✅ Operasi"},
+    ELP:{n:"eLLP",o:"BDP, KPT",p:"BDP",yr:"2026",st:"In Progress 40%"},
+    AIM:{n:"AI Metadata & Tagging",o:"BDP, KPT",p:"BDP",yr:"2026",st:"In Progress 50%"},
+    RMS:{n:"RMS",o:"BDP, KPT",p:"BDP",yr:"2026",st:"In Progress 60%"},
+    NKI:{n:"NKI",o:"BKPI, JPT",p:"BKPI",yr:"2026",st:"Dirancang 20%"},
+    MRA:{n:"MyRA",o:"BKPI, JPT",p:"BKPI",yr:"2026",st:"In Progress 55%"},
+    NEX:{n:"MyNEX",o:"BDP, KPT",p:"BDP",yr:"2026",st:"Dirancang 25%"},
+    ETH:{n:"MyEARTH",o:"JPPKK, BIPD",p:"JPPKK",yr:"2026",st:"Dirancang 10%"}};
+  return map[id]||{n:id,o:"-",p:"-",yr:"-",st:"-"};
+}
+
+const iEdges = [
+  // ── BACKBONE GDR ──
+  {from:"GDR",to:"UPU",type:"backbone",label:"Data Master Pelajar",desc:"UPUOnline menghantar semua rekod kemasukan pelajar domestik ke GDR sebagai Master Student Record. GDR menjadi sumber kebenaran tunggal untuk semua data pelajar.",canMerge:""},
+  {from:"GDR",to:"MyCAS",type:"backbone",label:"Rekod Pelajar Asing",desc:"MyCAS menghantar rekod pelajar antarabangsa ke GDR. Ini membolehkan analisis bersepadu domestik + antarabangsa dari satu sumber.",canMerge:""},
+  {from:"GDR",to:"E2E",type:"backbone",label:"Rekod Visa Pelajar",desc:"E2E Visa menghantar rekod visa dan status imigresen pelajar asing ke GDR untuk tracking imigresen dan analisis dasar.",canMerge:""},
+  {from:"GDR",to:"ALM",type:"backbone",label:"Data Alumni",desc:"MyAlumni menarik data graduan dari GDR dan menghantar balik rekod kerjaya, lokasi, dan aktiviti alumni untuk analisis impak.",canMerge:""},
+  {from:"GDR",to:"MHF",type:"backbone",label:"Trend Kesihatan Agregat",desc:"Mental Health Framework menghantar data agregat (bukan peribadi) trend kesihatan pelajar ke GDR. Data individu TIDAK dikongsi — perlindungan privasi PDPA.",canMerge:""},
+  {from:"GDR",to:"NLE",type:"backbone",label:"Data Kepuasan Pelajar",desc:"My-NLEES menghantar data hasil survei kepuasan pelajar ke GDR untuk analitik pendidikan nasional dan laporan eksekutif.",canMerge:""},
+  {from:"GDR",to:"GBI",type:"backbone",label:"Data KPI Tadbir Urus",desc:"Governance BI menarik data KPI institusi dari GDR untuk laporan tadbir urus. Bergantung sepenuhnya kepada GDR sebagai sumber data.",canMerge:""},
+  {from:"GDR",to:"INF",type:"backbone",label:"Data Sentimen",desc:"Inclusive Feedback menghantar data maklum balas dan sentimen stakeholder ke GDR untuk analisis trend secara nasional.",canMerge:""},
+  {from:"GDR",to:"IRS",type:"backbone",label:"Data Institusi Penarafan",desc:"MyIRIS menarik data prestasi institusi dari GDR untuk pengiraan skor penarafan. Tanpa GDR, MyIRIS perlu input data manual dari setiap IPT.",canMerge:""},
+  {from:"GDR",to:"ANA",type:"backbone",label:"Sumber Data Analitik",desc:"MyMoheS Analytics menarik semua data dari GDR sebagai sumber utama. GDR adalah fondasi — Analytics hanyalah lapisan visualisasi di atasnya.",canMerge:""},
+  {from:"GDR",to:"HDD",type:"backbone",label:"KPI Eksekutif",desc:"HEAD Dashboard menarik KPI agregat dari GDR untuk laporan kepada Kabinet dan JPM. Hanya lapisan visualisasi eksekutif — data dari GDR.",canMerge:""},
+  {from:"GDR",to:"MMT",type:"backbone",label:"Master Rekod Staf",desc:"MyMoheS Talent menghantar rekod komprehensif staf IPT ke GDR sebagai Master Staff Record. Semua sistem lain yang perlukan data staf harus ambil dari sini.",canMerge:""},
+  {from:"GDR",to:"LPU",type:"backbone",label:"Data Ahli Lembaga",desc:"LPU Talent Pool menghantar data profil calon dan ahli lembaga UA ke GDR untuk rekod tadbir urus berpusat.",canMerge:""},
+  {from:"GDR",to:"REV",type:"backbone",label:"Data Pendapatan UA",desc:"Revenue Governance menghantar data pendapatan universiti ke GDR untuk analitik kewangan nasional dan laporan MOF.",canMerge:""},
+  {from:"GDR",to:"NFF",type:"backbone",label:"Data Kos Per-Pelajar",desc:"NFF Cost System menghantar data kos sebenar per-pelajar per-program ke GDR. Kritikal untuk reformasi NFF dan dasar pengagihan peruntukan.",canMerge:""},
+  {from:"GDR",to:"ICL",type:"backbone",label:"Rekod Pinjaman",desc:"ICLR/PTPTN menghantar rekod pinjaman dan sejarah bayaran balik ke GDR untuk tracking graduan dan analisis portfolio pinjaman.",canMerge:""},
+  {from:"GDR",to:"DLE",type:"backbone",label:"Rekod Pembelajaran xAPI",desc:"DLE menghantar rekod pembelajaran digital (xAPI format) ke GDR. Ini membolehkan analisis bersilang antara prestasi akademik dan aktiviti pembelajaran.",canMerge:""},
+  {from:"GDR",to:"ITD",type:"backbone",label:"Data Penggunaan VR/AR",desc:"ITD Platform menghantar data penggunaan VR/AR dan pencapaian simulasi pelajar ke GDR untuk analitik keberkesanan pembelajaran imersif.",canMerge:""},
+  {from:"GDR",to:"TCI",type:"backbone",label:"Hash Blockchain Sijil",desc:"TCISE menghantar hash blockchain kelayakan akademik ke GDR sebagai rekod master sijil. GDR menyimpan metadata sijil (bukan kandungan blockchain).",canMerge:""},
+  {from:"GDR",to:"MCR",type:"backbone",label:"Rekod Micro-credential",desc:"Micro-credential menghantar rekod pencapaian, sijil digital, dan metadata kursus ke GDR untuk portfolio kelayakan pelajar yang komprehensif.",canMerge:""},
+  {from:"GDR",to:"BKA",type:"backbone",label:"Rekod Kredit Akademik",desc:"Bank Kredit Akademik menghantar rekod kredit semua pelajar ke GDR. Ini membolehkan analisis kadar pemindahan kredit dan keberkesanan sistem kredit.",canMerge:""},
+  {from:"GDR",to:"ELP",type:"backbone",label:"Rekod PSH",desc:"eLLP menghantar rekod pembelajaran sepanjang hayat ke GDR untuk analisis penyertaan PSH dan impak dasar pembelajaran seumur hidup.",canMerge:""},
+  {from:"GDR",to:"AIM",type:"backbone",label:"Metadata Tag Kandungan",desc:"AI Metadata menghantar metadata tag kandungan pembelajaran ke GDR untuk membolehkan carian semantik bersepadu merentasi semua platform.",canMerge:""},
+  {from:"GDR",to:"RMS",type:"backbone",label:"Data Penyelidikan",desc:"RMS menghantar data geran, projek, dan output penyelidikan ke GDR sebagai pusat data penyelidikan nasional untuk analisis ROI penyelidikan.",canMerge:""},
+  {from:"GDR",to:"NKI",type:"backbone",label:"Metadata Penerbitan",desc:"NKI menghantar metadata penerbitan ilmiah ke GDR untuk analitik penyelidikan nasional dan laporan impak kepada Kabinet.",canMerge:""},
+  {from:"GDR",to:"MRA",type:"backbone",label:"Metrik Impak Penyelidikan",desc:"MyRA menghantar metrik impak penyelidikan (sitasi, H-index, status RU) ke GDR untuk laporan prestasi penyelidikan nasional.",canMerge:""},
+  {from:"GDR",to:"NEX",type:"backbone",label:"Profil Pakar (dari MMT)",desc:"MyNEX menarik profil pakar dari GDR yang bersumberkan MyMoheS Talent. Elak duplikasi — NEX TIDAK simpan data staf secara berasingan.",canMerge:""},
+  {from:"GDR",to:"ETH",type:"backbone",label:"Data Alam Sekitar",desc:"MyEARTH menghantar dataset alam sekitar ke GDR sebagai domain data khusus. Cadangan: MyEARTH harus menjadi 'domain' dalam GDR, bukan sistem berasingan.",canMerge:"Boleh digabungkan sebagai domain dalam GDR"},
+
+  // ── DUPLICATE/OVERLAP ──
+  {from:"ANA",to:"HDD",type:"duplicate",label:"⚠ PERTINDIHAN FUNGSI",desc:"PERTINDIHAN KRITIKAL: MyMoheS Analytics (L5, Pelaksana: HEAD) DAN HEAD Dashboard (L10, Pelaksana: HEAD) KEDUA-DUANYA adalah platform pemantauan prestasi IPT dengan fungsi hampir sama. Dibina oleh pasukan yang SAMA (HEAD) tetapi untuk lonjakan berbeza. PEMBAZIRAN BESAR.",canMerge:"✅ MESTI DIGABUNGKAN: HEAD Dashboard jadi 'lapisan eksekutif' di atas MyMoheS Analytics. Satu platform, dua paparan — operasi dan eksekutif."},
+  {from:"ANA",to:"GBI",type:"duplicate",label:"⚠ PERTINDIHAN LAPORAN",desc:"PERTINDIHAN: MyMoheS Analytics (L5) dan Governance BI (L5) sama-sama ada fungsi laporan KPI institusi. Governance BI lebih fokus tadbir urus, Analytics lebih menyeluruh — tetapi ada kawasan bertindih yang ketara dalam laporan KPI.",canMerge:"✅ Boleh Digabungkan: Governance BI jadi modul 'Tadbir Urus' dalam platform Analytics bersepadu."},
+  {from:"ANA",to:"IRS",type:"duplicate",label:"⚠ PERTINDIHAN DATA PENARAFAN",desc:"PERTINDIHAN DATA: MyMoheS Analytics dan MyIRIS sama-sama ada data penilaian dan penarafan institusi. MyIRIS lebih fokus penarafan awam (untuk orang ramai), Analytics untuk pengurusan dalaman KPT.",canMerge:"🔶 Boleh Dikurangkan: Definisikan sempadan jelas — MyIRIS = penarafan AWAM; Analytics = laporan DALAMAN."},
+  {from:"HDD",to:"GBI",type:"duplicate",label:"⚠ PERTINDIHAN TADBIR URUS",desc:"PERTINDIHAN: HEAD Dashboard (L10) dan Governance BI (L5) sama-sama ada laporan tadbir urus dan akauntabiliti institusi. Pembaziran dalam pembangunan dan penyelenggaraan dua sistem.",canMerge:"✅ Boleh Digabungkan: Satukan ke dalam satu platform — lapisan eksekutif (HEAD) dan lapisan tadbir urus (Governance BI)."},
+  {from:"HDD",to:"IRS",type:"duplicate",label:"⚠ PERTINDIHAN DASHBOARD",desc:"PERTINDIHAN: HEAD Dashboard dan MyIRIS sama-sama papar dashboard prestasi institusi kepada pengguna luaran dan dalaman. Ada overlap dalam paparan KPI universiti.",canMerge:"🔶 Boleh Dikurangkan: HEAD Dashboard untuk pengurusan tertinggi KPT/Kabinet; MyIRIS untuk awam dan penarafan."},
+  {from:"NLE",to:"INF",type:"duplicate",label:"⚠ PERTINDIHAN MAKLUM BALAS",desc:"PERTINDIHAN SERIUS: My-NLEES (L1, Pelaksana: BKA) mengumpul maklum balas pelajar melalui survei berkala. Inclusive Feedback Platform (L5, Pelaksana: BGA) mengumpul maklum balas semua stakeholder merentasi pelbagai saluran. Fungsi teras SAMA — kumpul dan analisis maklum balas.",canMerge:"✅ MESTI DIGABUNGKAN: Satukan jadi 'Platform Survei & Maklum Balas Nasional KPT'. My-NLEES jadi modul 'Survei Pelajar', Inclusive Feedback jadi modul 'Maklum Balas Umum'."},
+  {from:"UPU",to:"MyCAS",type:"duplicate",label:"⚠ 7 MEDAN DATA SAMA",desc:"PERTINDIHAN DATA: UPUOnline (domestik) dan MyCAS (antarabangsa) mempunyai 7 medan data yang SAMA: ID pelajar, program, institusi, tawaran, bayaran, data peribadi, keputusan akademik. Ini membawa kepada duplikasi data dan risiko ketidakkonsistenan.",canMerge:"✅ Boleh Diselesaikan: Backend data bersatu melalui GDR. UPUOnline kekal untuk domestik, MyCAS untuk antarabangsa — tapi data master disimpan di GDR."},
+
+  // ── API INTEGRATIONS ──
+  {from:"UPU",to:"TCI",type:"api",label:"Sahkan Sijil SPM/STPM",desc:"UPUOnline memerlukan TCISE untuk sahkan keaslian sijil SPM/STPM pelajar secara masa nyata melalui blockchain sebelum proses padanan merit. Tanpa integrasi ini, pengesahan manual perlukan 3-7 hari.",canMerge:""},
+  {from:"UPU",to:"ALM",type:"api",label:"Data Asas Alumni",desc:"Rekod kemasukan pelajar dari UPUOnline (no. IC, program, institusi, tahun masuk) menjadi rekod asas dalam MyAlumni apabila pelajar tamat. Ini memastikan tracking berterusan dari kemasukan → pengajian → alumni.",canMerge:""},
+  {from:"MyCAS",to:"E2E",type:"api",label:"Trigger Proses Visa",desc:"Setelah MyCAS luluskan permohonan pelajar antarabangsa, data pelajar (passport, program, institusi) dihantar terus ke E2E Visa untuk memulakan proses visa secara automatik. Kedua-dua sistem dimiliki EMGS — sepatutnya satu proses end-to-end.",canMerge:"✅ Boleh Disatukan: Jadikan E2E Visa modul dalam MyCAS — pelajar isi satu borang, visa diproses automatik."},
+  {from:"MyCAS",to:"ALM",type:"api",label:"Alumni Antarabangsa",desc:"Pelajar antarabangsa yang tamat dari MyCAS perlu didaftarkan dalam MyAlumni Global untuk tracking alumni asing, pengukuran impak internasionalisasi, dan jaringan alumni global.",canMerge:""},
+  {from:"MyCAS",to:"TCI",type:"api",label:"Semak Kelayakan Asing",desc:"MyCAS memerlukan TCISE untuk semak dan sahkan kelayakan akademik asing (A-Level, IB, Abitur, Gaokao dll) sebelum tawaran kemasukan dikeluarkan. Penting untuk integriti proses penerimaan.",canMerge:""},
+  {from:"E2E",to:"ALM",type:"api",label:"Rekod Visa Alumni",desc:"Rekod visa dan sejarah imigresen pelajar asing dari E2E Visa diperlukan dalam MyAlumni untuk tracking alumni antarabangsa dan analisis negara asal graduan Malaysia.",canMerge:""},
+  {from:"TCI",to:"RMS",type:"api",label:"Sahkan Kelayakan Penyelidik",desc:"RMS memerlukan TCISE untuk sahkan kelayakan akademik (ijazah, PhD) penyelidik sebelum permohonan geran diproses. Ini memastikan hanya penyelidik berkelayakan yang mendapat geran.",canMerge:""},
+  {from:"TCI",to:"NEX",type:"api",label:"Sahkan Kepakaran Pakar",desc:"MyNEX memerlukan TCISE untuk sahkan kelayakan dan pengkhususan pakar akademik yang disenaraikan. Tanpa ini, sesiapa boleh mendakwa sebagai pakar tanpa pengesahan.",canMerge:""},
+  {from:"TCI",to:"BKA",type:"api",label:"Pengesahan Sijil Kredit",desc:"Bank Kredit Akademik menggunakan TCISE untuk sahkan bahawa kredit yang direkodkan adalah dari institusi yang diiktiraf dan sijil adalah sah. TCISE adalah 'trust anchor' untuk sistem kredit.",canMerge:""},
+  {from:"TCI",to:"MCR",type:"api",label:"Sijil MC Disahkan",desc:"Micro-credential menggunakan TCISE untuk terbitkan sijil digital micro-credential yang boleh disahkan melalui blockchain. Majikan boleh semak keaslian sijil MC tanpa hubungi institusi.",canMerge:""},
+  {from:"TCI",to:"DLE",type:"api",label:"Sijil Kursus Digital",desc:"DLE menggunakan TCISE untuk keluarkan sijil digital yang disahkan blockchain bagi kursus yang ditamatkan. Ini meningkatkan kredibiliti sijil digital berbanding sijil kertas biasa.",canMerge:""},
+  {from:"TCI",to:"ALM",type:"api",label:"Kelayakan Alumni Disahkan",desc:"MyAlumni menggunakan TCISE untuk paparkan kelayakan akademik alumni yang telah disahkan blockchain. Majikan boleh semak kelayakan alumni melalui MyAlumni + TCISE tanpa hubungi universiti.",canMerge:""},
+  {from:"MMT",to:"NEX",type:"api",label:"Profil Pakar dari Rekod Staf",desc:"MyNEX mengambil data profil pakar terus dari MyMoheS Talent (rekod staf akademik). Ini mengelakkan duplikasi — staf hanya update profil di SATU tempat (MMT), MyNEX papar secara automatik.",canMerge:"✅ Prinsip EA Betul: NEX harus HANYA display data dari MMT, bukan simpan berasingan."},
+  {from:"MMT",to:"LPU",type:"api",label:"Calon Ahli Lembaga",desc:"LPU Talent Pool mengambil data profil individu dari MyMoheS Talent untuk calon ahli Lembaga Pengarah UA. Prinsip sama — elak dua pangkalan data profil berasingan.",canMerge:"✅ Prinsip EA Betul: LPU harus menjadi modul dalam MMT, bukan sistem profil berasingan."},
+  {from:"MMT",to:"RMS",type:"api",label:"Profil Penyelidik",desc:"RMS mengambil profil penyelidik (nama, kelayakan, institusi, bidang) dari MyMoheS Talent sebagai sumber data staf akademik yang sah. Elak input manual data penyelidik dalam RMS.",canMerge:"✅ Prinsip EA Betul: RMS ambil dari MMT, bukan simpan profil berasingan."},
+  {from:"REV",to:"NFF",type:"api",label:"Data Kewangan UA Berkongsi",desc:"Revenue Governance dan NFF Cost System berkongsi data kewangan UA. NFF perlukan data pendapatan dari Revenue Governance untuk kira sustainability institusi, manakala Revenue Gov perlukan data kos dari NFF.",canMerge:"✅ Boleh Digabungkan: Jadikan satu 'Platform Kewangan Pendidikan Tinggi' dengan dua modul: Penjanaan Pendapatan + Pengiraan Kos."},
+  {from:"REV",to:"ICL",type:"api",label:"Kutipan Pinjaman sebagai Pendapatan",desc:"Revenue Governance mengambil data kutipan bayaran balik pinjaman dari ICLR/PTPTN sebagai sebahagian sumber pendapatan/cash flow dalam analisis kewangan UA.",canMerge:"Kurangkan integrasi langsung — alirkan data kewangan melalui Gudang Data Raya sebagai hub untuk elak sambungan point-to-point antara sistem kewangan"},
+  {from:"NFF",to:"ICL",type:"api",label:"Kos-Bayaran Balik Berkaitan",desc:"NFF Cost System dan ICLR/PTPTN berkongsi data kerana kadar bayaran balik pinjaman yang adil sepatutnya berkaitan dengan kos sebenar program pengajian.",canMerge:"✅ Boleh Digabungkan: Ketiga-tiga sistem kewangan (REV+NFF+ICL) patut menjadi satu platform."},
+  {from:"ICL",to:"ALM",type:"api",label:"Cari & Hubungi Graduan",desc:"ICLR/PTPTN memerlukan rekod terkini graduan dari MyAlumni (lokasi, majikan, maklumat kerjaya) untuk kesan dan hubungi graduan bagi kutipan bayaran balik pinjaman secara automatik.",canMerge:""},
+
+  // ── DATA SHARING ──
+  {from:"DLE",to:"ITD",type:"data",label:"Platform Induk → Modul VR/AR",desc:"ITD Platform (VR/AR) adalah komponen pembelajaran imersif dalam DLE. Rekod pencapaian simulasi VR/AR dan progress pelajar dihantar ke DLE sebagai sebahagian rekod pembelajaran.",canMerge:"✅ MESTI DIGABUNGKAN: ITD harus jadi modul 'Immersive Learning' dalam DLE — bukan sistem berasingan."},
+  {from:"DLE",to:"MCR",type:"data",label:"Platform Induk → Modul MC",desc:"Kursus micro-credential ditawarkan dan disampaikan melalui DLE. Rekod penyertaan dan pencapaian MC dikongsi antara DLE dan Micro-credential Platform.",canMerge:"✅ Boleh Digabungkan: Micro-credential jadi modul dalam DLE."},
+  {from:"DLE",to:"ELP",type:"data",label:"Platform Dikongsi PSH",desc:"eLLP menggunakan kandungan dan infrastruktur DLE untuk penyampaian kursus PSH. Pelajar formal dan peserta PSH guna platform yang sama, hanya beza hak akses.",canMerge:"✅ MESTI DIGABUNGKAN: eLLP jadi modul 'PSH' dalam DLE — satu platform pembelajaran untuk semua."},
+  {from:"DLE",to:"AIM",type:"data",label:"Kandungan untuk Ditag",desc:"AI Metadata & Tagging mentag semua kandungan pembelajaran dalam DLE secara automatik menggunakan NLP. Ini memudahkan carian kandungan dan sistem cadangan pembelajaran.",canMerge:"✅ AI Metadata harus jadi Shared Service — bukan sistem berasingan."},
+  {from:"DLE",to:"BKA",type:"data",label:"Kredit dari Aktiviti Pembelajaran",desc:"Pencapaian dan penyelesaian kursus dalam DLE boleh ditukarkan kepada kredit akademik yang direkodkan dalam Bank Kredit Akademik.",canMerge:""},
+  {from:"MCR",to:"BKA",type:"data",label:"Kredit dari Micro-credential",desc:"Micro-credential yang berjaya ditamatkan menghasilkan kredit akademik yang direkodkan terus dalam Bank Kredit Akademik. Ini menyokong pemindahan kredit fleksibel.",canMerge:""},
+  {from:"ELP",to:"MCR",type:"data",label:"MC dalam PSH",desc:"eLLP menawarkan micro-credential sebagai sebahagian program PSH. Peserta eLLP boleh ambil kursus MC yang diiktiraf MQA melalui portal eLLP.",canMerge:"Apabila eLLP digabungkan ke dalam DLE, sambungan ini menjadi hubungan dalaman — kurangkan kompleksiti integrasi luar"},
+  {from:"ELP",to:"AIM",type:"data",label:"Tag Kandungan PSH",desc:"AI Metadata mentag kandungan PSH dalam eLLP untuk carian semantik dan sistem cadangan kursus yang relevan berdasarkan profil pelajar.",canMerge:"AI Metadata sebagai Shared Service"},
+  {from:"ELP",to:"BKA",type:"data",label:"Kredit PSH",desc:"Kursus PSH yang ditamatkan melalui eLLP menghasilkan kredit PSH yang direkodkan dalam Bank Kredit Akademik untuk portfolio pembelajaran seumur hidup.",canMerge:""},
+  {from:"AIM",to:"NKI",type:"data",label:"Tag Kandungan Ilmiah",desc:"AI Metadata mentag kandungan ilmiah dalam NKI (tesis, jurnal, dataset) untuk memudahkan carian penyelidikan dan penemuan bersama merentasi bahasa dan bidang.",canMerge:"AI Metadata sebagai Shared Service untuk NKI"},
+  {from:"RMS",to:"NKI",type:"data",label:"Output Penyelidikan → Repositori",desc:"Output penyelidikan dari RMS (laporan akhir, artikel, data) dihantar ke NKI sebagai repository nasional terbuka. Ini memastikan semua output penyelidikan KPT dapat diakses awam.",canMerge:""},
+  {from:"RMS",to:"MRA",type:"data",label:"Data Geran & Penerbitan",desc:"Data geran dan penerbitan dari RMS digunakan oleh MyRA untuk pengiraan metrik impak penyelidikan. Tanpa integrasi ini, MyRA perlu input data manual dari RMS.",canMerge:""},
+  {from:"RMS",to:"NEX",type:"data",label:"Profil Penyelidik Aktif",desc:"Profil penyelidik yang aktif dalam RMS (projek terkini, kepakaran, institusi) dipaparkan dalam MyNEX sebagai direktori pakar untuk kolaborasi industri-universiti.",canMerge:""},
+  {from:"NKI",to:"MRA",type:"data",label:"Sitasi & Metrik Penerbitan",desc:"Data sitasi, H-index, dan jumlah muat turun dari NKI digunakan oleh MyRA untuk pengiraan skor impak penyelidikan. NKI adalah sumber data bibliometrik untuk MyRA.",canMerge:""},
+  {from:"MRA",to:"IRS",type:"data",label:"Skor Impak → Komponen Penarafan",desc:"Skor impak penyelidikan dari MyRA dimasukkan dalam MyIRIS sebagai salah satu komponen penilaian dalam sistem penarafan bersepadu universiti.",canMerge:""},
+  {from:"ETH",to:"NKI",type:"data",label:"Data Alam Sekitar → Repositori",desc:"Data penyelidikan alam sekitar dari MyEARTH (dataset iklim, biodiversiti) dihantar ke NKI sebagai penerbitan open data untuk akses penyelidik global.",canMerge:""},
+  {from:"NEX",to:"LPU",type:"data",label:"Cadangan Calon Lembaga",desc:"Pakar akademik dalam MyNEX yang mempunyai kelayakan dan pengalaman governance boleh dicadangkan sebagai calon ahli Lembaga Pengarah UA dalam LPU Talent Pool.",canMerge:""},
+  {from:"MHF",to:"NLE",type:"data",label:"Konteks Kesihatan Mental",desc:"Data agregat trend kesihatan pelajar dari Mental Health Framework dikongsi dengan My-NLEES untuk memperkaya survei pengalaman pelajar dengan perspektif kesejahteraan.",canMerge:""},
+  {from:"NLE",to:"DLE",type:"data",label:"Maklum Balas → Penambahbaikan P&P",desc:"Maklum balas pelajar dari My-NLEES (tentang kualiti pengajaran, kandungan kursus) digunakan untuk penambahbaikan kandungan dan pengalaman dalam DLE secara berterusan.",canMerge:""},
+  {from:"GBI",to:"LPU",type:"data",label:"Prestasi Lembaga",desc:"Data prestasi dan pematuhan lembaga dari Governance BI dimasukkan dalam LPU Talent Pool sebagai rekod prestasi ahli lembaga semasa untuk penilaian pencalonan.",canMerge:""},
+  {from:"IRS",to:"MRA",type:"data",label:"Data Penarafan ↔ Penyelidikan",desc:"MyIRIS menggunakan data impak penyelidikan dari MyRA, dan sebaliknya metrik penarafan MyIRIS mempengaruhi motivasi penyelidikan universiti. Hubungan dua hala.",canMerge:""},
+  {from:"ALM",to:"ICL",type:"data",label:"Lokasi & Maklumat Graduan",desc:"MyAlumni menyediakan data terkini lokasi, majikan, dan pendapatan alumni kepada ICLR/PTPTN untuk memudahkan kutipan bayaran balik pinjaman dan pengurusan tunggakan.",canMerge:""},
+  {from:"ALM",to:"ELP",type:"data",label:"Alumni → Pelajar PSH",desc:"Alumni menggunakan profil MyAlumni mereka untuk mendaftar dan mengakses program PSH melalui eLLP. Ini mewujudkan ekosistem pembelajaran berterusan pasca-tamat.",canMerge:""},
+];
+
+let iCtx, iW, iH, iScale=1, iOffX=0, iOffY=0, iDragging=false, iLastX, iLastY;
+let activeNode=null, hoveredEdge=null, filterType='all';
+
+function ptLineDist(px,py,x1,y1,x2,y2){
+  const dx=x2-x1,dy=y2-y1,len2=dx*dx+dy*dy;
+  if(len2===0) return Math.hypot(px-x1,py-y1);
+  const t=Math.max(0,Math.min(1,((px-x1)*dx+(py-y1)*dy)/len2));
+  return Math.hypot(px-(x1+t*dx),py-(y1+t*dy));
+}
+
+const edgeColors={backbone:'#fbbf24',api:'#60a5fa',duplicate:'#ef4444',data:'#64748b'};
+const edgeWidths={backbone:1.5,api:2,duplicate:3,data:1};
+
+function initInteropGraph(){
+  const canvas=document.getElementById('interopCanvas');
+  if(!canvas) return;
+  iW=canvas.offsetWidth||1200;
+  canvas.width=iW; canvas.height=640; iH=640;
+  iCtx=canvas.getContext('2d');
+  drawGraph();
+
+  canvas.onmousedown=e=>{iDragging=true;iLastX=e.clientX;iLastY=e.clientY;};
+  canvas.onmousemove=e=>{
+    const r=canvas.getBoundingClientRect();
+    const mx=(e.clientX-r.left-iOffX)/iScale, my=(e.clientY-r.top-iOffY)/iScale;
+    const hitNode=iNodes.find(n=>Math.hypot(n.x-mx,n.y-my)<(n.r+6));
+    const tt=document.getElementById('interopTooltip');
+    // Check edge proximity (6px threshold)
+    let hitEdge=null;
+    if(!hitNode){
+      for(const e2 of iEdges){
+        if(filterType!=='all'&&e2.type!==filterType) continue;
+        const src=iNodes.find(n=>n.id===e2.from), tgt=iNodes.find(n=>n.id===e2.to);
+        if(!src||!tgt) continue;
+        if(ptLineDist(mx,my,src.x,src.y,tgt.x,tgt.y)<7){hitEdge=e2;break;}
+      }
+    }
+    if(hitNode){
+      canvas.style.cursor='pointer';
+      tt.style.display='block';tt.style.left=(e.clientX+14)+'px';tt.style.top=(e.clientY-10)+'px';
+      tt.innerHTML=`<strong style="color:${hitNode.color}">${hitNode.label.replace('\n',' ')}</strong><br><span style="color:#94a3b8;font-size:.75rem">${hitNode.desc}</span>`;
+    } else if(hitEdge){
+      canvas.style.cursor='crosshair';
+      const s=getSysInfo(hitEdge.from),t2=getSysInfo(hitEdge.to);
+      tt.style.display='block';tt.style.left=(e.clientX+14)+'px';tt.style.top=(e.clientY-10)+'px';
+      const typeLabel={backbone:'⭐ Backbone GDR',api:'🔗 API Integrasi',duplicate:'🚨 Bertindih/Duplikat',data:'📊 Perkongsian Data'};
+      tt.innerHTML=`<strong style="color:${edgeColors[hitEdge.type]}">${typeLabel[hitEdge.type]} — ${hitEdge.label}</strong><br>
+        <span style="color:#e2e8f0">${s.n} → ${t2.n}</span><br>
+        <span style="color:#94a3b8;font-size:.75rem">${hitEdge.desc.substring(0,120)}…</span><br>
+        <span style="color:#60a5fa;font-size:.72rem">👆 Klik untuk maklumat penuh</span>`;
+      if(hoveredEdge!==hitEdge){hoveredEdge=hitEdge;drawGraph();}
+    } else {
+      canvas.style.cursor=iDragging?'grabbing':'grab';
+      tt.style.display='none';
+      if(hoveredEdge){hoveredEdge=null;drawGraph();}
+    }
+    if(iDragging){
+      iOffX+=e.clientX-iLastX;iOffY+=e.clientY-iLastY;
+      iLastX=e.clientX;iLastY=e.clientY; drawGraph();
+    }
+  };
+  canvas.onmouseup=e=>{
+    if(!iDragging||(Math.abs(e.clientX-iLastX)<3&&Math.abs(e.clientY-iLastY)<3)){
+      const r=canvas.getBoundingClientRect();
+      const mx=(e.clientX-r.left-iOffX)/iScale, my=(e.clientY-r.top-iOffY)/iScale;
+      const hitNode=iNodes.find(n=>Math.hypot(n.x-mx,n.y-my)<(n.r+6));
+      if(hitNode){ activeNode=activeNode?.id===hitNode.id?null:hitNode; hoveredEdge=null; drawGraph(); showNodeInfo(activeNode); }
+      else {
+        // Check edge click
+        let clickedEdge=null;
+        for(const e2 of iEdges){
+          if(filterType!=='all'&&e2.type!==filterType) continue;
+          const src=iNodes.find(n=>n.id===e2.from),tgt=iNodes.find(n=>n.id===e2.to);
+          if(!src||!tgt) continue;
+          if(ptLineDist(mx,my,src.x,src.y,tgt.x,tgt.y)<7){clickedEdge=e2;break;}
+        }
+        if(clickedEdge) showEdgeDetail(clickedEdge);
+      }
+    }
+    iDragging=false;
+  };
+  canvas.onmouseleave=()=>{iDragging=false;document.getElementById('interopTooltip').style.display='none';};
+  canvas.onwheel=e=>{
+    e.preventDefault();
+    const delta=e.deltaY<0?1.1:0.9;
+    iScale=Math.max(0.4,Math.min(3,iScale*delta));
+    drawGraph();
+  };
+  window.addEventListener('resize',()=>{
+    iW=canvas.offsetWidth||1200;canvas.width=iW;drawGraph();
+  });
+}
+
+function drawGraph(){
+  if(!iCtx) return;
+  iCtx.clearRect(0,0,iW,iH);
+  iCtx.save();
+  iCtx.translate(iOffX,iOffY);
+  iCtx.scale(iScale,iScale);
+
+  // Draw background grid
+  iCtx.strokeStyle='rgba(255,255,255,.04)';iCtx.lineWidth=1;
+  for(let x=0;x<1200;x+=60){iCtx.beginPath();iCtx.moveTo(x,0);iCtx.lineTo(x,700);iCtx.stroke();}
+  for(let y=0;y<700;y+=60){iCtx.beginPath();iCtx.moveTo(0,y);iCtx.lineTo(1200,y);iCtx.stroke();}
+
+  // Draw edges
+  iEdges.forEach(e=>{
+    if(filterType!=='all'&&e.type!==filterType) return;
+    const src=iNodes.find(n=>n.id===e.from);
+    const tgt=iNodes.find(n=>n.id===e.to);
+    if(!src||!tgt) return;
+    const isActive=activeNode&&(activeNode.id===src.id||activeNode.id===tgt.id);
+    const isHover=hoveredEdge===e;
+    const isGrayed=activeNode&&!isActive&&!isHover;
+    iCtx.beginPath();
+    iCtx.moveTo(src.x,src.y);
+    iCtx.lineTo(tgt.x,tgt.y);
+    iCtx.strokeStyle=isGrayed?'rgba(100,100,120,.1)':(isActive||isHover?edgeColors[e.type]:edgeColors[e.type]+(e.type==='backbone'?'88':'55'));
+    iCtx.lineWidth=(isActive||isHover?edgeWidths[e.type]*2.5:edgeWidths[e.type])/(iScale>1?iScale*0.6:1);
+    if(e.type==='backbone'){iCtx.setLineDash([5,4]);}
+    else if(e.type==='duplicate'){iCtx.setLineDash([8,3]);}
+    else{iCtx.setLineDash([]);}
+    iCtx.stroke();
+    iCtx.setLineDash([]);
+    // Arrow on active/hover edge midpoint
+    if((isActive||isHover)&&e.type!=='backbone'){
+      const ang=Math.atan2(tgt.y-src.y,tgt.x-src.x);
+      const emx=(src.x+tgt.x)/2,emy=(src.y+tgt.y)/2;
+      iCtx.save();iCtx.translate(emx,emy);iCtx.rotate(ang);
+      iCtx.fillStyle=edgeColors[e.type];
+      iCtx.beginPath();iCtx.moveTo(8,0);iCtx.lineTo(-5,-5);iCtx.lineTo(-5,5);iCtx.fill();
+      iCtx.restore();
+      // Edge label on hover
+      if(isHover&&e.label){
+        iCtx.save();
+        iCtx.font='bold 10px Segoe UI';iCtx.textAlign='center';
+        const lw=iCtx.measureText(e.label).width+14;
+        iCtx.fillStyle='rgba(15,23,42,.88)';
+        iCtx.beginPath();iCtx.roundRect(emx-lw/2,emy-10,lw,18,4);iCtx.fill();
+        iCtx.fillStyle=edgeColors[e.type];
+        iCtx.textBaseline='middle';iCtx.fillText(e.label,emx,emy);
+        iCtx.restore();
+      }
+    }
+  });
+
+  // Draw nodes
+  iNodes.forEach(n=>{
+    const isActive2=activeNode?.id===n.id;
+    const isConnected=activeNode&&iEdges.some(e=>(e.from===activeNode.id&&e.to===n.id)||(e.to===activeNode.id&&e.from===n.id));
+    const isGrayed2=activeNode&&!isActive2&&!isConnected;
+    // Glow for active
+    if(isActive2||isConnected){
+      iCtx.beginPath();iCtx.arc(n.x,n.y,n.r+8,0,Math.PI*2);
+      iCtx.fillStyle=isActive2?n.color+'66':'rgba(255,255,255,.15)';iCtx.fill();
+    }
+    iCtx.beginPath();iCtx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    iCtx.fillStyle=isGrayed2?'#374151':n.color+(isActive2?'':isConnected?'cc':'99');
+    iCtx.fill();
+    iCtx.strokeStyle=isActive2?'#fff':isConnected?n.color:'rgba(255,255,255,.3)';
+    iCtx.lineWidth=isActive2?3:1.5;iCtx.stroke();
+    // Label
+    const parts=n.label.split('\n');
+    iCtx.fillStyle=isGrayed2?'#6b7280':'#fff';
+    iCtx.font=`bold ${Math.max(9,n.r*0.48)}px Segoe UI`;
+    iCtx.textAlign='center';iCtx.textBaseline='middle';
+    const lh=n.r*0.52;
+    parts.forEach((p,i)=>{
+      iCtx.fillText(p,n.x,n.y+(i-(parts.length-1)/2)*lh);
+    });
+    // Connection count badge
+    if(n.id==='GDR'||isActive2){
+      const cnt=iEdges.filter(e=>e.from===n.id||e.to===n.id).length;
+      iCtx.beginPath();iCtx.arc(n.x+n.r*0.7,n.y-n.r*0.7,n.r*0.38,0,Math.PI*2);
+      iCtx.fillStyle='#1e293b';iCtx.fill();
+      iCtx.fillStyle='#fff';iCtx.font=`bold ${n.r*0.35}px Segoe UI`;
+      iCtx.fillText(cnt,n.x+n.r*0.7,n.y-n.r*0.7);
+    }
+  });
+  iCtx.restore();
+}
+
+function showNodeInfo(node){
+  const div=document.getElementById('interopInfo');
+  if(!node){div.innerHTML='<h4>👆 Klik pada mana-mana nod untuk lihat maklumat sambungan</h4><p style="color:#94a3b8">Klik nod untuk highlights semua hubungannya.</p>';return;}
+  const conn=iEdges.filter(e=>e.from===node.id||e.to===node.id);
+  const byType={backbone:[],api:[],duplicate:[],data:[]};
+  conn.forEach(e=>{
+    const other=e.from===node.id?e.to:e.from;
+    const oNode=iNodes.find(n=>n.id===other);
+    if(oNode) byType[e.type].push(oNode.label.replace('\n',' '));
+  });
+  div.innerHTML=`
+    <h4 style="color:${node.color}">📍 ${node.label.replace('\n',' ')} — ${conn.length} Sambungan</h4>
+    <p style="color:#94a3b8;margin-bottom:8px">${node.desc}</p>
+    ${byType.backbone.length?`<p><span style="color:#fbbf24">⭐ Backbone GDR:</span> ${byType.backbone.join(', ')}</p>`:''}
+    ${byType.api.length?`<p><span style="color:#60a5fa">🔗 API Integrasi:</span> ${byType.api.join(', ')}</p>`:''}
+    ${byType.duplicate.length?`<p><span style="color:#ef4444">🚨 Bertindih/Duplikat:</span> ${byType.duplicate.join(', ')}</p>`:''}
+    ${byType.data.length?`<p><span style="color:#94a3b8">📊 Perkongsian Data:</span> ${byType.data.join(', ')}</p>`:''}`;
+}
+
+function showEdgeDetail(edge){
+  const s=getSysInfo(edge.from),t=getSysInfo(edge.to);
+  const typeLabel={backbone:'⭐ Backbone GDR',api:'🔗 API Integrasi',duplicate:'🚨 Pertindihan/Duplikat',data:'📊 Perkongsian Data'};
+  const typeColor={backbone:'#c8a400',api:'#3b82f6',duplicate:'#ef4444',data:'#64748b'};
+  openModal(`${typeLabel[edge.type]} — ${edge.label}`,`
+    <div style="background:#0f172a;border-radius:10px;padding:14px;margin-bottom:14px;border-left:4px solid ${typeColor[edge.type]}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div style="color:#94a3b8;font-size:.7rem;text-transform:uppercase;margin-bottom:4px">Dari Sistem</div>
+          <strong style="color:#e2e8f0">${s.n}</strong>
+          <div style="font-size:.75rem;color:#64748b;margin-top:2px">Pemilik: ${s.o}</div>
+          <div style="font-size:.75rem;color:#64748b">Pelaksana: ${s.p}</div>
+          <div style="font-size:.75rem;color:#64748b">Tahun: ${s.yr} | ${s.st}</div>
+        </div>
+        <div>
+          <div style="color:#94a3b8;font-size:.7rem;text-transform:uppercase;margin-bottom:4px">Ke Sistem</div>
+          <strong style="color:#e2e8f0">${t.n}</strong>
+          <div style="font-size:.75rem;color:#64748b;margin-top:2px">Pemilik: ${t.o}</div>
+          <div style="font-size:.75rem;color:#64748b">Pelaksana: ${t.p}</div>
+          <div style="font-size:.75rem;color:#64748b">Tahun: ${t.yr} | ${t.st}</div>
+        </div>
+      </div>
+    </div>
+    <h4 style="color:#003087;margin-bottom:8px">📋 Kenapa Wujud Sambungan Ini?</h4>
+    <p style="background:#f0f4ff;border-left:3px solid #003087;padding:10px 12px;border-radius:6px;line-height:1.7">${edge.desc}</p>
+    <h4 style="color:${typeColor[edge.type]};margin:12px 0 6px">💡 Cadangan Tindakan</h4>
+    <p style="background:${edge.type==='duplicate'?'#fff0f0':'#f0fff4'};border-left:3px solid ${typeColor[edge.type]};padding:10px 12px;border-radius:6px;line-height:1.7;font-weight:600">${edge.canMerge}</p>`);
+}
+
+function buildExplanationSection(){
+  const groups=[
+    {type:'duplicate',title:'🚨 Pertindihan & Duplikat — Tindakan Segera Diperlukan',bg:'#1a0000',border:'#ef4444',edges:iEdges.filter(e=>e.type==='duplicate')},
+    {type:'api',title:'🔗 Integrasi API — Hubungan Fungsi Langsung',bg:'#001533',border:'#3b82f6',edges:iEdges.filter(e=>e.type==='api')},
+    {type:'data',title:'📊 Perkongsian Data — Aliran Data Antara Sistem',bg:'#0a0a0a',border:'#64748b',edges:iEdges.filter(e=>e.type==='data')},
+    {type:'backbone',title:'⭐ Backbone Gudang Data Raya — Semua 28 Sistem',bg:'#1a1400',border:'#fbbf24',edges:iEdges.filter(e=>e.type==='backbone')},
+  ];
+  const div=document.getElementById('interopExplain');
+  if(!div) return;
+  div.innerHTML=groups.map(g=>`
+    <div style="background:${g.bg};border:1px solid ${g.border}33;border-radius:12px;margin-bottom:16px;overflow:hidden">
+      <div style="background:${g.border}22;border-left:4px solid ${g.border};padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleExplain('exp_${g.type}')">
+        <span style="color:#e2e8f0;font-weight:700;font-size:.92rem">${g.title} <span style="background:${g.border};color:#fff;border-radius:20px;padding:1px 9px;font-size:.72rem;margin-left:6px">${g.edges.length}</span></span>
+        <span style="color:#94a3b8;font-size:1.1rem" id="earr_${g.type}">▼</span>
+      </div>
+      <div id="exp_${g.type}" style="display:none;padding:12px 16px">
+        ${g.edges.map((e,i)=>{
+          const s=getSysInfo(e.from),t=getSysInfo(e.to);
+          const sf=systems.find(x=>x.singkatan===s.n||x.singkatan===e.from)||null;
+          const tf=systems.find(x=>x.singkatan===t.n||x.singkatan===e.to)||null;
+          const isFirst=i%2===0;
+          return `<div style="background:${isFirst?'rgba(255,255,255,.04)':'rgba(255,255,255,.02)'};border-radius:8px;padding:12px 14px;margin-bottom:8px;border-left:3px solid ${g.border}55">
+            <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+              <div style="flex:1;min-width:280px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+                  <span onclick="openAppInfoModal('${e.from}')" style="background:${g.border};color:#fff;border-radius:6px;padding:3px 10px;font-size:.75rem;font-weight:700;cursor:pointer;border:1px solid transparent" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">${s.n} <span style="opacity:.7;font-size:.65rem">···</span></span>
+                  <span style="color:#64748b;font-weight:700">→</span>
+                  <span onclick="openAppInfoModal('${e.to}')" style="background:${g.border}99;color:#fff;border-radius:6px;padding:3px 10px;font-size:.75rem;font-weight:700;cursor:pointer" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">${t.n} <span style="opacity:.7;font-size:.65rem">···</span></span>
+                  <span style="background:#1e293b;color:#94a3b8;border-radius:6px;padding:2px 9px;font-size:.68rem">${e.label}</span>
+                </div>
+                <p style="color:#cbd5e1;font-size:.8rem;line-height:1.7;margin:6px 0 ${e.canMerge?'6px':'0'}">${e.desc}</p>
+                ${e.canMerge?`<div style="background:rgba(255,255,255,.06);border-radius:6px;padding:6px 10px;font-size:.75rem;color:#94a3b8;line-height:1.6">${e.canMerge}</div>`:''}
+              </div>
+              <div style="min-width:220px;background:#0f172a;border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 14px;font-size:.73rem">
+                <div style="color:#fbbf24;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">📤 DARI</div>
+                <div style="color:#e2e8f0;font-weight:800;font-size:.8rem;margin-bottom:1px">${sf?sf.singkatan:s.n}</div>
+                ${sf?`<div style="color:#94a3b8;font-size:.7rem;margin-bottom:2px;line-height:1.4">${sf.nama}</div>`:''}
+                <div style="color:#64748b;font-size:.7rem;margin-bottom:2px">👤 ${sf?sf.pemilik:s.o}</div>
+                <div style="color:#64748b;font-size:.7rem;margin-bottom:8px">${sf?getStatus2026(sf):s.st}</div>
+                <div style="color:#38bdf8;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px">📥 KE</div>
+                <div style="color:#e2e8f0;font-weight:800;font-size:.8rem;margin-bottom:1px">${tf?tf.singkatan:t.n}</div>
+                ${tf?`<div style="color:#94a3b8;font-size:.7rem;margin-bottom:2px;line-height:1.4">${tf.nama}</div>`:''}
+                <div style="color:#64748b;font-size:.7rem;margin-bottom:2px">👤 ${tf?tf.pemilik:t.o}</div>
+                <div style="color:#64748b;font-size:.7rem">${tf?getStatus2026(tf):t.st}</div>
+              </div>
+            </div>
+          </div>`;}).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function openAppInfoModal(id){
+  const s=getSysInfo(id);
+  const sys=systems.find(x=>x.singkatan===s.n || x.singkatan===id);
+  if(sys){
+    const statusHtml=getStatus2026(sys);
+    const psLabel=`PS${sys.ps} — ${psNames[sys.ps]||''}`;
+    openModal(`📱 ${sys.singkatan}`,
+      `<div style="background:#e6f0ff;border-left:4px solid #003087;padding:14px 18px;border-radius:8px;margin-bottom:14px">
+        <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+          <div>
+            <span style="background:#003087;color:#fff;border-radius:6px;padding:3px 10px;font-size:.78rem;font-weight:800;display:inline-block;margin-bottom:6px">${sys.singkatan}</span>
+            <div style="font-size:1rem;font-weight:800;color:#003087;line-height:1.4;margin-bottom:4px">${sys.nama}</div>
+            <div style="font-size:.78rem;color:#6b7a99">Kod RPTM: <strong>${sys.kod}</strong></div>
+          </div>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+        <tr style="border-bottom:1px solid #edf0f7">
+          <td style="padding:9px 0;color:#6b7a99;width:38%;vertical-align:top">👤 Pemilik Projek</td>
+          <td style="padding:9px 0;font-weight:700;color:#1a2340">${sys.pemilik}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #edf0f7">
+          <td style="padding:9px 0;color:#6b7a99;vertical-align:top">⚙ Pelaksana KPI</td>
+          <td style="padding:9px 0">${sys.pelaksanaKPI}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #edf0f7">
+          <td style="padding:9px 0;color:#6b7a99">📊 Status 2026</td>
+          <td style="padding:9px 0">${statusHtml}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #edf0f7">
+          <td style="padding:9px 0;color:#6b7a99">🎯 Lonjakan</td>
+          <td style="padding:9px 0"><span class="badge badge-lonjakan">L${sys.lonjakan}</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #edf0f7">
+          <td style="padding:9px 0;color:#6b7a99">🏛 Kluster PS</td>
+          <td style="padding:9px 0">${psLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding:9px 0;color:#6b7a99;vertical-align:top">📋 Fungsi Utama</td>
+          <td style="padding:9px 0;line-height:1.7;color:#374151">${sys.fungsi}</td>
+        </tr>
+      </table>`);
+  } else {
+    openModal(`📱 ${s.n}`,
+      `<div style="background:#e6f0ff;border-left:4px solid #003087;padding:14px 18px;border-radius:8px;margin-bottom:12px">
+        <div style="font-size:1rem;font-weight:800;color:#003087">${s.n}</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+        <tr style="border-bottom:1px solid #edf0f7"><td style="padding:8px 0;color:#6b7a99;width:38%">👤 Pemilik Projek</td><td style="padding:8px 0;font-weight:600">${s.o}</td></tr>
+        <tr style="border-bottom:1px solid #edf0f7"><td style="padding:8px 0;color:#6b7a99">⚙ Pelaksana</td><td style="padding:8px 0">${s.p}</td></tr>
+        <tr><td style="padding:8px 0;color:#6b7a99">📊 Status 2026</td><td style="padding:8px 0">${s.st}</td></tr>
+      </table>`);
+  }
+}
+
+function openWoGModal(){
+  openModal('🏛 Analisis Whole-of-Government (WoG) — Ekosistem Digital KPT',
+  `<div style="font-size:.86rem;line-height:1.8;color:#1a2340">
+
+  <div style="background:#e6f0ff;border-left:4px solid #003087;padding:12px 16px;border-radius:8px;margin-bottom:16px">
+    <strong style="color:#003087">Apakah Pendekatan Whole-of-Government (WoG)?</strong><br>
+    WoG merujuk kepada kaedah di mana kementerian, jabatan, dan agensi kerajaan bekerja secara bersepadu merentasi sempadan organisasi untuk mencapai matlamat dasar yang sama. Dalam konteks KPT, ini bermakna 29 sistem digital RPTM 2026-2035 bukan sahaja perlu berfungsi secara dalaman, tetapi mesti disepadukan dengan sistem dan agensi kerajaan persekutuan yang lain.
+  </div>
+
+  <h4 style="color:#003087;margin:14px 0 8px;font-size:.92rem">🔗 1. HUBUNGAN KPT DENGAN AGENSI KERAJAAN LAIN</h4>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>JPN — Jabatan Pendaftaran Negara</strong><br>
+    Sistem UPUOnline dan MyCAS perlu mengesahkan identiti pemohon menggunakan MyKad/data JPN. Tanpa integrasi langsung dengan MyData (platform JPN), proses pengesahan identiti pelajar dan ibu bapa masih dilakukan secara manual. <em>Cadangan: sertai MyData Framework JDN untuk akses API JPN.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>JIM — Jabatan Imigresen Malaysia</strong><br>
+    Sistem E2E Visa Digital dan MyCAS bergantung kepada data visa/permit tinggal pelajar antarabangsa yang dipegang oleh JIM. Proses kelulusan visa semasa masih memerlukan campur tangan manual antara EMGS, JIM, dan KPT. <em>Cadangan: API bersepadu E2E Visa mesti dihubungkan terus ke sistem JIM.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>PTPTN — Perbadanan Tabung Pendidikan Tinggi Nasional</strong><br>
+    Sistem ICLR/PTPTN dan NFF Cost System berkait rapat dengan data pinjaman, status pembayaran balik, dan formula pengiraan kos per pelajar yang diuruskan oleh PTPTN dan Kementerian Kewangan. Maklumat ini perlu disegerakkan secara automatik bagi memastikan ketepatan formula NFF. <em>Cadangan: integrasi API dua-hala antara NFF Cost System KPT dan sistem PTPTN.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>MQA — Malaysian Qualifications Agency</strong><br>
+    Sistem Micro-credential, Bank Kredit Akademik, dan TCISE memerlukan pengesahan dan akreditasi kelayakan daripada MQA. Pada masa ini, proses akreditasi micro-credential masih berasingan daripada sistem penarafan MQA. <em>Cadangan: TCISE dijadikan gateway pengesahan yang menghubungkan MQA, KPT, dan semua IPT.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>Lembaga Peperiksaan Malaysia (LPM)</strong><br>
+    TCISE (Sijil Kelayakan Akademik) bergantung kepada data SPM dan STPM dari LPM untuk mengesahkan kelayakan masuk pelajar. Integrasi API antara TCISE dan pangkalan data LPM akan menghapuskan keperluan pelajar menghantar salinan sijil secara manual. <em>Cadangan: API langsung LPM → TCISE → UPUOnline untuk aliran pengesahan automatik.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>JDN — Jabatan Digital Negara</strong><br>
+    Gudang Data Raya (GDR) KPT perlu dibangunkan mengikut piawaian data kebangsaan yang ditetapkan oleh JDN melalui Dasar Data Terbuka dan MyGovEA. GDR mesti berdaftar sebagai Sistem Maklumat Kritikal Negara dan mematuhi garis panduan Arkitek Data Nasional JDN. <em>Peringatan: Pembangunan GDR perlu mendapat kelulusan dan bimbingan JDN, bukan dibina secara terpencil.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>MITI & Agensi Inovasi (MOSTI/MRANTI)</strong><br>
+    Sistem RMS, NKI, MyRA, dan MyNEX yang memfokus kepada penyelidikan, inovasi, dan ekosistem akademik perlu diselaraskan dengan pangkalan data penyelidikan MOSTI dan MRANTI. Data geran penyelidikan, paten, dan harta intelek yang dicatatkan dalam RMS patut dicerminkan dalam sistem kebangsaan MOSTI. <em>Cadangan: RMS KPT dihubungkan dengan MyIPO dan portal geran MOSTI.</em>
+  </div>
+
+  <div style="background:#f4f6fb;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <strong>EPU & MOF — Perbendaharaan Malaysia</strong><br>
+    Sistem Revenue Governance dan NFF Cost System yang menentukan formula pembiayaan IPT perlu selaras dengan sistem perancangan fiskal EPU dan Perbendaharaan. Keputusan NFF (Normative Funding Formula) memberi impak langsung kepada Belanjawan Persekutuan. <em>Cadangan: NFF Cost System KPT diintegrasikan dengan sistem Perbendaharaan untuk proses kelulusan bajet automatik.</em>
+  </div>
+
+  <h4 style="color:#003087;margin:14px 0 8px;font-size:.92rem">🌐 2. GUDANG DATA RAYA (GDR) SEBAGAI DATA HUB WoG</h4>
+  <div style="background:#fff8e6;border-left:4px solid #c8a400;padding:12px 16px;border-radius:8px;margin-bottom:10px">
+    GDR bukan sahaja berfungsi sebagai repositori data KPT, tetapi berpotensi menjadi <strong>Data Hub WoG untuk sektor pendidikan tinggi negara</strong>. Ini bermakna GDR perlu direka bentuk dari awal dengan kapasiti untuk menerima, memproses, dan berkongsi data dengan agensi luar KPT seperti EPU, Perbendaharaan, JDN, MOSTI, JPN, dan PTPTN. Seni bina GDR mesti mematuhi Rangka Kerja Interoperabiliti Kerajaan (MyGovEA) dan menggunakan piawaian API terbuka (REST/GraphQL) yang diiktiraf oleh JDN.
+  </div>
+
+  <h4 style="color:#003087;margin:14px 0 8px;font-size:.92rem">⚠ 3. RISIKO SILO DIGITAL JIKA WoG DIABAIKAN</h4>
+  <div style="background:#fff0f0;border-left:4px solid #c0392b;padding:12px 16px;border-radius:8px;margin-bottom:10px">
+    Jika 29 sistem KPT dibangunkan secara berasingan tanpa pertimbangan WoG:<br>
+    • Data pelajar akan wujud dalam silo yang berbeza di JPN, KPT, PTPTN, MQA, dan IPT — mewujudkan inkonsistensi dan pertindihan data.<br>
+    • Sistem pengesahan kelayakan (TCISE, UPUOnline, MyCAS) perlu menyimpan salinan data dari agensi lain, membawa risiko keselamatan dan ketidaktepatan.<br>
+    • Pelaporan dasar kepada Parlimen dan EPU memerlukan penyatuan data manual yang mahal dan rawan kepada kesilapan.<br>
+    • Kos pembangunan dan penyelenggaraan sistem meningkat apabila setiap kementerian membangunkan fungsi yang sama secara berasingan.
+  </div>
+
+  <h4 style="color:#003087;margin:14px 0 8px;font-size:.92rem">✅ 4. CADANGAN MEKANISME TADBIR URUS WoG</h4>
+  <div style="background:#e8f5e9;border-left:4px solid #1a7a4a;padding:12px 16px;border-radius:8px">
+    <strong>a)</strong> Tubuhkan <em>Jawatankuasa Data Antara Agensi KPT</em> dengan ahli dari JPN, PTPTN, MQA, JDN, dan IPT terpilih — bermesyuarat suku tahunan untuk menyelaraskan piawaian data dan integrasi API.<br><br>
+    <strong>b)</strong> Semua API yang menghubungkan sistem KPT dengan agensi luar perlu didaftarkan dalam <em>Direktori API Kerajaan Malaysia</em> di bawah penyeliaan JDN.<br><br>
+    <strong>c)</strong> GDR mesti mendapat taraf <em>Infrastruktur Maklumat Kritikal Negara (IMKN)</em> di bawah Akta Keselamatan Siber 2018 — dengan keperluan ketersediaan 99.9%, perlindungan data, dan audit tahunan.<br><br>
+    <strong>d)</strong> Pelantikan seorang <em>Arkitek Data KPT</em> (Chief Data Architect) yang bertanggungjawab memastikan semua sistem KPT mematuhi piawaian WoG dan MyGovEA Framework semasa reka bentuk, bukan selepas pembangunan.
+  </div>
+
+  </div>`);
+}
+
+function toggleExplain(id){
+  const el=document.getElementById(id);
+  const type=id.replace('exp_','');
+  const arr=document.getElementById('earr_'+type);
+  if(!el) return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arr) arr.textContent=open?'▼':'▲';
+}
+
+function setFilter(type,btn){
+  filterType=type;
+  document.querySelectorAll('.interop-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  drawGraph();
+}
+function resetInterop(){
+  activeNode=null;filterType='all';iScale=1;iOffX=0;iOffY=0;
+  document.querySelectorAll('.interop-btn').forEach((b,i)=>{ if(i===0)b.classList.add('active');else b.classList.remove('active'); });
+  drawGraph();
+  showNodeInfo(null);
+}
+
+// ── BOOT ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', initSystems);
+</script>
+</body>
+</html>
